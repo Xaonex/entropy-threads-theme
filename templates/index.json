@@ -13,7 +13,7 @@
         "text": {
           "type": "text",
           "settings": {
-            "text": "Streetwear for the chaotic soul.",
+            "text": "WELCOME TO THE VOID. Digital-first streetwear for the chaotic soul.",
             "text_style": "body"
           }
         },
@@ -23,9 +23,9 @@
             "button_label_1": "Shop the Drop",
             "button_link_1": "shopify://collections/all",
             "button_style_secondary_1": true,
-            "button_label_2": "",
-            "button_link_2": "",
-            "button_style_secondary_2": false
+            "button_label_2": "Read the Manifesto",
+            "button_link_2": "shopify://pages/manifesto",
+            "button_style_secondary_2": true
           }
         }
       },
@@ -60,11 +60,19 @@
         "text": {
           "type": "text",
           "settings": {
-            "text": "<p>We don't follow trends. We unravel them. Premium streetwear designed for the void.</p>"
+            "text": "<p>We don’t exist to blend in. Entropy Threads is a digital-first streetwear label born from glitch screens, late-night cities, and the static between signals. We design for outliers—the ones who see beauty in broken systems and comfort in the dark corners of the feed. Every piece is a controlled error in a world obsessed with polish. Limited drops. Premium fabrics. No compromise.</p>"
+          }
+        },
+        "caption": {
+          "type": "caption",
+          "settings": {
+            "text": "MANIFESTO FRAGMENT",
+            "text_style": "uppercase"
           }
         }
       },
       "block_order": [
+        "caption",
         "heading",
         "text"
       ],
@@ -82,10 +90,10 @@
       "settings": {
         "collection": "all",
         "products_to_show": 8,
-        "title": "New Arrivals",
+        "title": "Latest Transmission",
         "heading_size": "h2",
-        "description": "",
-        "show_description": false,
+        "description": "Pieces from the current drop. Once they’re gone, they’re gone.",
+        "show_description": true,
         "description_style": "body",
         "columns_desktop": 4,
         "enable_desktop_slider": false,
@@ -108,17 +116,51 @@
     "marquee": {
       "type": "marquee",
       "settings": {
-        "text": "CHAOS // ENTROPY // VOID // ",
+        "text": "ENTROPY // VOID // CHAOS // SIGNAL // NOISE // ERROR // 404 HUMAN FOUND // LIMITED DROP // NO RESTOCKS // MADE FOR OUTLIERS",
         "speed": 15,
         "background": "#8B0000",
         "text_color": "#FFFFFF"
       }
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {
+        "color_scheme": "scheme-1",
+        "full_width": true,
+        "padding_top": 40,
+        "padding_bottom": 52
+      },
+      "blocks": {
+        "heading": {
+          "type": "heading",
+          "settings": {
+            "heading": "Join the Signal",
+            "heading_size": "h1"
+          }
+        },
+        "paragraph": {
+          "type": "paragraph",
+          "settings": {
+            "text": "<p>Get early access to drops, private transmissions from the Void, and designs that never hit social.</p>"
+          }
+        },
+        "email_form": {
+          "type": "email_form",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "heading",
+        "paragraph",
+        "email_form"
+      ]
     }
   },
   "order": [
     "image_banner",
     "marquee",
     "rich_text",
-    "featured_collection"
+    "featured_collection",
+    "newsletter"
   ]
 }
