@@ -1,29 +1,29 @@
 {
   "sections": {
-    "main": {
+    "main-page-manifesto": {
       "type": "main-page",
       "settings": {
         "padding_top": 28,
         "padding_bottom": 28
       }
     },
-    "rich_text": {
+    "rich-text-manifesto": {
       "type": "rich-text",
       "blocks": {
-        "heading": {
+        "heading-manifesto": {
           "type": "heading",
           "settings": {
             "heading": "Manifesto from the Void",
             "heading_size": "h1"
           }
         },
-        "text": {
+        "text-manifesto": {
           "type": "text",
           "settings": {
             "text": "<p><strong>Welcome to the Void</strong><br>Entropy Threads isn’t a logo slapped on blanks. It’s a reaction to a world optimized for clicks, not humans.</p><p>We were born from digital static, dead malls, late-night train platforms, and endless feeds that all start to look the same. We make streetwear for people who feel misaligned with that reality—and bored of pretending otherwise.</p><p><strong>Embrace the Glitch</strong><br>Perfection is an aesthetic for people who still believe everything is under control. We don’t. We celebrate the glitch, the compression artifact, the broken light. Each design is a controlled error—a reminder that cracks in the system are where the truth leaks through.</p><p><strong>Unravel Trends</strong><br>We don’t chase the hype cycle or design for the explore page. Entropy Threads is built for signal, not noise. We create pieces that still feel right when the algorithm moves on. If you’re here, it’s because you’re not waiting to be told what’s in.</p><p><strong>Quality Over Quantity</strong><br>Fast fashion burns through outfits and attention spans. We refuse both. Every drop is limited, every fabric chosen for weight, feel, and longevity. If you wear Entropy, you’re not buying in—you’re opting out.</p><p><strong>This isn’t merch. It’s armor.</strong><br>Join us. Wear the noise.</p>"
           }
         },
-        "button": {
+        "button-manifesto": {
           "type": "button",
           "settings": {
             "button_label": "View the Latest Drop",
@@ -33,9 +33,9 @@
         }
       },
       "block_order": [
-        "heading",
-        "text",
-        "button"
+        "heading-manifesto",
+        "text-manifesto",
+        "button-manifesto"
       ],
       "settings": {
         "desktop_content_position": "center",
@@ -48,7 +48,7 @@
     }
   },
   "order": [
-    "main",
-    "rich_text"
+    "main-page-manifesto",
+    "rich-text-manifesto"
   ]
 }
