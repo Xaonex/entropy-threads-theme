@@ -1,0 +1,70 @@
+{% schema %}
+{
+  "name": "Scrolling Marquee",
+  "settings": [
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Text",
+      "default": "CHAOS // ENTROPY // VOID // "
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Background",
+      "default": "#8B0000"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "range",
+      "id": "speed",
+      "min": 5,
+      "max": 30,
+      "step": 1,
+      "label": "Speed (seconds)",
+      "default": 15
+    }
+  ],
+  "presets": [
+    {
+      "name": "Scrolling Marquee"
+    }
+  ]
+}
+{% endschema %}
+
+<style>
+  .marquee-section {
+    background-color: {{ section.settings.background }};
+    color: {{ section.settings.text_color }};
+    overflow: hidden;
+    white-space: nowrap;
+    padding: 15px 0;
+    font-family: var(--font-heading-family);
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 2rem;
+    letter-spacing: 0.1em;
+  }
+
+  .marquee-content {
+    display: inline-block;
+    animation: marquee {{ section.settings.speed }}s linear infinite;
+  }
+
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+</style>
+
+<div class="marquee-section">
+  <div class="marquee-content">
+    {{ section.settings.text }} {{ section.settings.text }} {{ section.settings.text }} {{ section.settings.text }} {{ section.settings.text }} {{ section.settings.text }} {{ section.settings.text }} {{ section.settings.text }}
+  </div>
+</div>
