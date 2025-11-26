@@ -3595,3 +3595,50 @@ details-disclosure > details {
     transform: translateX(100%) scaleX(0);
   }
 }
+
+/* Entropy Threads Customizations */
+
+/* Glitch Effect for Banner Heading */
+.banner__heading {
+  position: relative;
+  text-shadow: 2px 2px 0px #8B0000, -2px -2px 0px #333;
+  animation: glitch 3s infinite alternate-reverse;
+}
+
+@keyframes glitch {
+  0% { text-shadow: 2px 2px 0px #8B0000, -2px -2px 0px #333; transform: translate(0); }
+  2% { text-shadow: -2px -2px 0px #8B0000, 2px 2px 0px #333; transform: translate(-1px, 1px); }
+  4% { text-shadow: 2px -2px 0px #8B0000, -2px 2px 0px #333; transform: translate(1px, -1px); }
+  6% { text-shadow: 2px 2px 0px #8B0000, -2px -2px 0px #333; transform: translate(0); }
+  100% { text-shadow: 2px 2px 0px #8B0000, -2px -2px 0px #333; transform: translate(0); }
+}
+
+/* Neon Glow for Buttons */
+.button {
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.button:hover {
+  box-shadow: 0 0 15px #8B0000, 0 0 30px #8B0000;
+  border-color: #ff0000;
+  text-shadow: 0 0 5px rgba(255,255,255,0.8);
+  transform: translateY(-2px);
+}
+
+/* Product Card Hover Zoom */
+.card__media .media > img {
+  transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.card:hover .card__media .media > img {
+  transform: scale(1.1);
+}
+
+/* Section Heading Style */
+.title, .rich-text__heading {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
