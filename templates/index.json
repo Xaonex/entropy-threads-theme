@@ -92,7 +92,7 @@
         "products_to_show": 8,
         "title": "Latest Transmission",
         "heading_size": "h2",
-        "description": "Pieces from the current drop. Once they’re gone, they’re gone.",
+        "description": "<p>Pieces from the current drop. Once they’re gone, they’re gone.</p>",
         "show_description": true,
         "description_style": "body",
         "columns_desktop": 4,
