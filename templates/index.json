@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "image_banner": {
@@ -47,6 +56,15 @@
         "show_text_below": false
       }
     },
+    "marquee": {
+      "type": "marquee",
+      "settings": {
+        "text": "ENTROPY // VOID // CHAOS // SIGNAL // NOISE // ERROR // 404 HUMAN FOUND // LIMITED DROP // NO RESTOCKS // MADE FOR OUTLIERS",
+        "background": "#8b0000",
+        "text_color": "#ffffff",
+        "speed": 30
+      }
+    },
     "rich_text": {
       "type": "rich-text",
       "blocks": {
@@ -62,17 +80,9 @@
           "settings": {
             "text": "<p>We don’t exist to blend in. Entropy Threads is a digital-first streetwear label born from glitch screens, late-night cities, and the static between signals. We design for outliers—the ones who see beauty in broken systems and comfort in the dark corners of the feed. Every piece is a controlled error in a world obsessed with polish. Limited drops. Premium fabrics. No compromise.</p>"
           }
-        },
-        "caption": {
-          "type": "caption",
-          "settings": {
-            "text": "MANIFESTO FRAGMENT",
-            "text_style": "uppercase"
-          }
         }
       },
       "block_order": [
-        "caption",
         "heading",
         "text"
       ],
@@ -113,23 +123,8 @@
         "padding_bottom": 36
       }
     },
-    "marquee": {
-      "type": "marquee",
-      "settings": {
-        "text": "ENTROPY // VOID // CHAOS // SIGNAL // NOISE // ERROR // 404 HUMAN FOUND // LIMITED DROP // NO RESTOCKS // MADE FOR OUTLIERS",
-        "speed": 15,
-        "background": "#8B0000",
-        "text_color": "#FFFFFF"
-      }
-    },
     "newsletter": {
       "type": "newsletter",
-      "settings": {
-        "color_scheme": "scheme-1",
-        "full_width": true,
-        "padding_top": 40,
-        "padding_bottom": 52
-      },
       "blocks": {
         "heading": {
           "type": "heading",
@@ -153,7 +148,13 @@
         "heading",
         "paragraph",
         "email_form"
-      ]
+      ],
+      "settings": {
+        "color_scheme": "scheme-1",
+        "full_width": true,
+        "padding_top": 40,
+        "padding_bottom": 52
+      }
     }
   },
   "order": [
