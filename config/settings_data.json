@@ -9,8 +9,7 @@
  */
 {
   "current": {
-    "logo": "shopify://shop_images/entropy_threads_logo_option3_refined_1764160655280.png",
-    "logo_width": 90,
+    "logo_width": 110,
     "favicon": "shopify://shop_images/entropy_favicon_1764869917303.jpg",
     "type_header_font": "oswald_n4",
     "heading_scale": 100,
