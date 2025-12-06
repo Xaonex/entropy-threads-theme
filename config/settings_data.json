@@ -184,8 +184,8 @@
           }
         }
       },
-      "favicon": "entropy-favicon.png",
-      "brand_image": "entropy-logo.png"
+      "favicon": "favicon.png",
+      "brand_image": "logo.png"
     }
   }
 }
