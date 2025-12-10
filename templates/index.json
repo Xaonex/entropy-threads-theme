@@ -62,7 +62,7 @@
         "heading": {
           "type": "heading",
           "settings": {
-            "heading": "Embrace the Chaos",
+            "heading": "[ SYSTEM STATUS: CHAOS ]",
             "heading_size": "h1"
           }
         },
@@ -91,7 +91,7 @@
       "settings": {
         "collection": "all",
         "products_to_show": 8,
-        "title": "Latest Transmission",
+        "title": "[ LATEST TRANSMISSION ]",
         "heading_size": "h2",
         "description": "<p>Pieces from the current drop. Once they’re gone, they’re gone.</p>",
         "show_description": true,

@@ -3642,3 +3642,11 @@ details-disclosure > details {
   letter-spacing: 0.1em;
 }
 
+
+/* AG TASK 02: Visual Flip - Monospace Headers */
+.rich-text__heading,
+.collection__title.title {
+  font-family: 'Courier New', Courier, monospace !important;
+  text-transform: uppercase;
+  letter-spacing: 0.1rem;
+}
