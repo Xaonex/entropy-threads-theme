@@ -375,27 +375,29 @@
   </body>
 </html>
 
-    <style>
+      <style>
     /* AG TASK 03: Watermark (Liquid Injection) */
-    .template-page-manifesto .rich-text {
-      position: relative;
-      z-index: 1;
-    }
+    {% if page.handle == 'manifesto' %}
+      .rich-text {
+        position: relative;
+        z-index: 1;
+      }
 
-    .template-page-manifesto .rich-text::before {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 60%;
-      height: 60%;
-      transform: translate(-50%, -50%);
-      background-image: url('{{ 'et-logo-watermark.png' | asset_url }}');
-      background-repeat: no-repeat;
-      background-position: center;
-      background-size: contain;
-      opacity: 0.3;
-      z-index: -1;
-      pointer-events: none;
-    }
+      .rich-text::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 60%;
+        height: 60%;
+        transform: translate(-50%, -50%);
+        background-image: url('{{ 'et-logo-watermark.png' | asset_url }}');
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: contain;
+        opacity: 1;
+        z-index: -1;
+        pointer-events: none;
+      }
+    {% endif %}
   </style>
