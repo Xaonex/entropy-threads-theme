@@ -375,8 +375,13 @@
   </body>
 </html>
 
-  <style>
+    <style>
     /* AG TASK 03: Watermark (Liquid Injection) */
+    .template-page-manifesto .rich-text {
+      position: relative;
+      z-index: 1;
+    }
+
     .template-page-manifesto .rich-text::before {
       content: '';
       position: absolute;
