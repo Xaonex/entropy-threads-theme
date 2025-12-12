@@ -3650,3 +3650,37 @@ details-disclosure > details {
   text-transform: uppercase;
   letter-spacing: 0.1rem;
 }
+
+/* AG TASK 03: Manifesto Page Styling */
+.template-page-manifesto .rich-text__text {
+  text-align: left !important;
+}
+
+.template-page-manifesto .rich-text strong {
+  font-family: 'Courier New', Courier, monospace !important;
+  text-transform: uppercase;
+  letter-spacing: 0.1rem;
+}
+
+/* Watermark */
+.template-page-manifesto .rich-text {
+  position: relative;
+  z-index: 1;
+}
+
+.template-page-manifesto .rich-text::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 60%;
+  height: 60%;
+  transform: translate(-50%, -50%);
+  background-image: url('et-logo-watermark.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  opacity: 0.05;
+  z-index: -1;
+  pointer-events: none;
+}
