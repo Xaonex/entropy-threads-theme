@@ -13,6 +13,7 @@ interface HomeProduct {
   handle: string;
   title: string;
   description: string;
+  image: string;
 }
 
 const Home = () => {
@@ -43,7 +44,9 @@ const Home = () => {
                     id: e.node.id,
                     handle: e.node.handle,
                     title: e.node.title,
-                    description: e.node.description || "ARTIFACT_DESCRIPTION_MISSING"
+                    description: e.node.description || "ARTIFACT_DESCRIPTION_MISSING",
+                    // Fix: Map the image safely
+                    image: e.node.images.edges[0]?.node.url || "" 
                 }));
                 setFeatured(mapped);
             }
@@ -120,25 +123,42 @@ const Home = () => {
                         </div>
                     ) : featured.length > 0 ? featured.map((p, i) => (
                         <GlowCard key={p.id} glowColor="#00ff00" intensity="medium">
-                            <Link to={`/product/${p.handle}`} className="block h-full cursor-pointer">
-                                <div className="h-96 flex flex-col justify-between p-6 bg-off-black relative group">
-                                    <div className="absolute top-4 right-4 text-xs font-mono text-white/50 border border-white/20 px-2 rounded">
+                            <Link to={`/product/${p.handle}`} className="block h-full cursor-pointer relative overflow-hidden group">
+                                {/* IMAGE BACKGROUND */}
+                                {p.image && (
+                                    <div className="absolute inset-0 z-0">
+                                        <img 
+                                            src={p.image} 
+                                            alt={p.title} 
+                                            className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-500 grayscale group-hover:grayscale-0"
+                                        />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-90 group-hover:opacity-60 transition-opacity duration-500" />
+                                    </div>
+                                )}
+                                
+                                <div className="h-96 flex flex-col justify-between p-6 relative z-10">
+                                    <div className="absolute top-4 right-4 text-xs font-mono text-white/50 border border-white/20 px-2 rounded backdrop-blur-sm">
                                         {String(i + 1).padStart(2, '0')}
                                     </div>
                                     <div className="flex-1 flex items-center justify-center">
-                                        <span className="text-6xl font-black text-white/5 group-hover:text-white/20 transition-colors">
-                                            {p.title.split(" ")[0] || "VOID"}
-                                        </span>
+                                         {/* If no image, show the placeholder text */}
+                                        {!p.image && (
+                                            <span className="text-6xl font-black text-white/5 group-hover:text-white/20 transition-colors">
+                                                {p.title.split(" ")[0]}
+                                            </span>
+                                        )}
                                     </div>
                                     <div>
-                                        <h3 className="text-xl font-bold text-white mb-2">{p.title}</h3>
-                                        <p className="font-mono text-sm text-gray-400 truncate">{p.description}</p>
+                                        <h3 className="text-xl font-bold text-white mb-2 mix-blend-difference">{p.title}</h3>
+                                        <p className="font-mono text-sm text-gray-400 truncate mix-blend-difference">{p.description}</p>
                                     </div>
                                 </div>
                             </Link>
                         </GlowCard>
                     )) : (
-                        <div className="text-static-gray font-mono">NO_ARTIFACTS_FOUND // CHECK_CONNECTION</div>
+                        <div className="col-span-full text-static-gray font-mono text-center py-12 border border-white/10">
+                            NO_ARTIFACTS_FOUND // CHECK_SHOPIFY_INVENTORY
+                        </div>
                     )}
                 </div>
              )}
