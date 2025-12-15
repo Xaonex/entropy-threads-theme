@@ -6,24 +6,24 @@
         "heading": {
           "type": "heading",
           "settings": {
-            "heading": "SIGNAL LOST",
+            "heading": "DROP_00: SIGNAL LOST",
             "heading_size": "h0"
           }
         },
         "text": {
           "type": "text",
           "settings": {
-            "text": "THE BROADCAST HAS STARTED. NO RERUNS.",
+            "text": "SYSTEM FAILURE IMMINENT",
             "text_style": "body"
           }
         },
         "button": {
           "type": "buttons",
           "settings": {
-            "button_label_1": "[ ENTER VOID ]",
+            "button_label_1": "SHOP DROP_00",
             "button_link_1": "shopify://collections/all",
             "button_style_secondary_1": false,
-            "button_label_2": "[ DECODE SIGNAL ]",
+            "button_label_2": "",
             "button_link_2": "shopify://pages/manifesto",
             "button_style_secondary_2": true
           }
@@ -35,13 +35,13 @@
         "button"
       ],
       "settings": {
-        "image_overlay_opacity": 40,
+        "image_overlay_opacity": 20,
         "image_height": "small",
         "image_behavior": "ambient",
         "desktop_content_position": "bottom-center",
         "desktop_content_alignment": "center",
         "show_text_box": false,
-        "color_scheme": "scheme-1",
+        "color_scheme": "scheme-4",
         "stack_images_on_mobile": false,
         "mobile_content_alignment": "center",
         "show_text_below": false
