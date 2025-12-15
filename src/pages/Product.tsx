@@ -29,17 +29,15 @@ const MOCK_PRODUCT: ProductData = {
 };
 
 const Product = () => {
-  const { id } = useParams(); // Should be handle in real app
+  const { id } = useParams();
   const [product, setProduct] = useState<ProductData>(MOCK_PRODUCT);
   const [loading, setLoading] = useState(true);
-  
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"details" | "sizing" | null>(null);
   const { addToCart } = useCart();
 
   useEffect(() => {
     async function loadData() {
-        // If "void-01" or undefined, stick to mock. Real handle would be different.
         if (!id || id === 'void-01') {
             setLoading(false);
             return;
@@ -58,8 +56,9 @@ const Product = () => {
                     name: p.title,
                     price: parseFloat(p.priceRange.minVariantPrice.amount),
                     description: p.description,
-                    features: ["100% Cotton", "Imported"], // Shopify doesn't always have features list easily
-                    images: p.media.edges.map((e: any) => e.node.image.url)
+                    features: ["100% Cotton", "Imported"],
+                    // FIXED: Using images instead of media for stability
+                    images: p.images.edges.map((e: any) => e.node.url)
                 });
             }
         } catch (e) {
@@ -80,7 +79,6 @@ const Product = () => {
         alert("SELECT_SIZE_REQUIRED_//"); 
         return;
     }
-    
     addToCart({
         id: product.id,
         name: product.name,
@@ -95,7 +93,6 @@ const Product = () => {
 
   return (
     <div className="pt-24 min-h-screen bg-void-black text-white">
-      
       {/* MOBILE HEADER */}
       <div className="md:hidden px-6 pb-6">
         <h1 className="text-2xl font-black tracking-tighter mb-2">
@@ -106,28 +103,19 @@ const Product = () => {
 
       <div className="container mx-auto px-0 md:px-6"> 
         <div className="flex flex-col md:flex-row gap-12">
-            
-            {/* LEFT: IMAGE STACK (60%) */}
+            {/* LEFT: IMAGE STACK */}
             <div className="w-full md:w-[60%] flex flex-col gap-4 px-0">
                 {product.images.map((img, index) => (
                     <div key={index} className="w-full aspect-[4/5] bg-off-black relative overflow-hidden group">
-                         <img 
-                            src={img} 
-                            alt={`${product.name} view ${index + 1}`} 
-                            className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-700 grayscale group-hover:grayscale-0"
-                         />
-                         <div className="absolute bottom-4 left-4 text-xs font-mono text-cyan-glitch">
-                            IMG_0{index + 1} // RAW_DATA
-                         </div>
+                         <img src={img} alt={`${product.name} view ${index + 1}`} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-700 grayscale group-hover:grayscale-0"/>
+                         <div className="absolute bottom-4 left-4 text-xs font-mono text-cyan-glitch">IMG_0{index + 1} // RAW_DATA</div>
                     </div>
                 ))}
             </div>
 
-            {/* RIGHT: DATA PANEL (40%) - STICKY */}
+            {/* RIGHT: DATA PANEL */}
             <div className="w-full md:w-[40%] px-6 md:px-0 relative">
                 <div className="sticky top-28 space-y-4 pb-12">
-                    
-                    {/* TITLE BLOCK */}
                     <div className="hidden md:block border-b border-white/20 pb-6">
                         <div className="flex justify-between items-start mb-2">
                             <h1 className="text-3xl font-black tracking-tighter leading-none max-w-md">
@@ -136,104 +124,60 @@ const Product = () => {
                         </div>
                         <div className="flex justify-between items-center font-mono">
                             <span className="text-xl text-white">${product.price.toFixed(2)}</span>
-                            <span className="text-[10px] text-signal-red animate-pulse">
-                                SYSTEM WATCH: <CountUp to={Math.floor(Math.random() * 50) + 12} duration={2} /> USERS ACTIVE
-                            </span>
+                            <span className="text-[10px] text-signal-red animate-pulse">SYSTEM WATCH: <CountUp to={Math.floor(Math.random() * 50) + 12} duration={2} /> USERS ACTIVE</span>
                         </div>
                     </div>
 
-                    {/* SELECTORS - SMALLER KEYS */}
                     <div className="space-y-2">
                         <label className="text-[10px] font-bold tracking-widest text-static-gray block mb-1">SIZE_SELECT_//</label>
                         <div className="grid grid-cols-4 gap-2">
                             {['S', 'M', 'L', 'XL'].map((size) => (
-                                <button 
-                                    key={size}
-                                    onClick={() => setSelectedSize(size)}
-                                    className={`h-10 border flex items-center justify-center font-mono text-xs transition-all duration-200 ${
-                                        selectedSize === size 
-                                        ? 'bg-white text-black border-white' 
-                                        : 'bg-transparent text-static-gray border-white/20 hover:border-white hover:text-white'
-                                    }`}
-                                >
-                                    [{size}]
-                                </button>
+                                <button key={size} onClick={() => setSelectedSize(size)} className={`h-10 border flex items-center justify-center font-mono text-xs transition-all duration-200 ${selectedSize === size ? 'bg-white text-black border-white' : 'bg-transparent text-static-gray border-white/20 hover:border-white hover:text-white'}`}>[{size}]</button>
                             ))}
                         </div>
                     </div>
 
-                    {/* ACTIONS - COMPACT */}
                     <div className="pt-2 space-y-2">
                         <Magnet strength={0.2} range={50}>
-                            <button 
-                                onClick={handleAddToCart}
-                                className="w-full h-12 bg-signal-red text-black font-black tracking-widest text-sm hover:bg-white transition-colors duration-300 relative overflow-hidden group"
-                            >
+                            <button onClick={handleAddToCart} className="w-full h-12 bg-signal-red text-black font-black tracking-widest text-sm hover:bg-white transition-colors duration-300 relative overflow-hidden group">
                                 <span className="relative z-10 group-hover:text-black">INITIATE TRANSFER</span>
                             </button>
                         </Magnet>
-                        <p className="text-[10px] text-center text-static-gray font-mono">
-                            SECURE_CONNECTION_ESTABLISHED_//
-                        </p>
+                        <p className="text-[10px] text-center text-static-gray font-mono">SECURE_CONNECTION_ESTABLISHED_//</p>
                     </div>
 
-                    {/* ACCORDIONS */}
                     <div className="border-t border-white/20 pt-4 space-y-0">
-                         {/* DETAILS */}
                          <div className="border-b border-white/10">
-                            <button 
-                                onClick={() => toggleTab('details')}
-                                className="w-full py-3 flex justify-between items-center text-left hover:text-cyan-glitch transition-colors"
-                            >
+                            <button onClick={() => toggleTab('details')} className="w-full py-3 flex justify-between items-center text-left hover:text-cyan-glitch transition-colors">
                                 <span className="font-bold tracking-widest text-xs">ARTIFACT_DETAILS</span>
                                 <span className="font-mono text-sm">{activeTab === 'details' ? '-' : '+'}</span>
                             </button>
                             {activeTab === 'details' && (
                                 <div className="pb-4 text-static-gray text-xs leading-relaxed animate-in slide-in-from-top-2 fade-in duration-300">
                                     <p className="mb-2">{product.description}</p>
-                                    <ul className="list-disc list-inside font-mono text-[10px]">
-                                        {product.features.map(f => <li key={f}>{f}</li>)}
-                                    </ul>
+                                    <ul className="list-disc list-inside font-mono text-[10px]">{product.features.map(f => <li key={f}>{f}</li>)}</ul>
                                 </div>
                             )}
                          </div>
-
-                         {/* SIZING */}
                          <div className="border-b border-white/10">
-                            <button 
-                                onClick={() => toggleTab('sizing')}
-                                className="w-full py-3 flex justify-between items-center text-left hover:text-cyan-glitch transition-colors"
-                            >
+                            <button onClick={() => toggleTab('sizing')} className="w-full py-3 flex justify-between items-center text-left hover:text-cyan-glitch transition-colors">
                                 <span className="font-bold tracking-widest text-xs">SIZE_GUIDE</span>
                                 <span className="font-mono text-sm">{activeTab === 'sizing' ? '-' : '+'}</span>
                             </button>
                             {activeTab === 'sizing' && (
-                                <div className="pb-4 text-static-gray text-xs font-mono animate-in slide-in-from-top-2 fade-in duration-300">
-                                    FIT: OVERSIZED.<br/>
-                                    MODEL IS 185CM WEARING SIZE L.<br/>
-                                    REFERENCE: SYSTEM_STANDARD_02.
-                                </div>
+                                <div className="pb-4 text-static-gray text-xs font-mono animate-in slide-in-from-top-2 fade-in duration-300">FIT: OVERSIZED.<br/>MODEL IS 185CM WEARING SIZE L.<br/>REFERENCE: SYSTEM_STANDARD_02.</div>
                             )}
                          </div>
                     </div>
-
                 </div>
             </div>
         </div>
       </div>
-
-       {/* MOBILE FIXED BOTTOM BAR */}
        <div className="md:hidden fixed bottom-6 left-6 right-6 z-50">
             <Magnet strength={0.2}>
-                <button 
-                    onClick={handleAddToCart}
-                    className="w-full h-12 bg-signal-red text-black font-black tracking-widest text-xs shadow-lg shadow-signal-red/20 border border-black"
-                >
-                    ADD TO CART - ${product.price}
-                </button>
+                <button onClick={handleAddToCart} className="w-full h-12 bg-signal-red text-black font-black tracking-widest text-xs shadow-lg shadow-signal-red/20 border border-black">ADD TO CART - ${product.price}</button>
             </Magnet>
        </div>
-
     </div>
   );
 };
