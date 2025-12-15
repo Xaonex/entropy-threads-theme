@@ -1,7 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 export interface CartItem {
-  id: string;
+  id: string; // Product ID
+  variantId: string; // Specific Variant ID for Checkout
   name: string;
   price: number;
   image: string;
@@ -25,19 +26,13 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
 
-  // Load cart from local storage on mount
   useEffect(() => {
     const savedCart = localStorage.getItem('entropy_cart');
     if (savedCart) {
-      try {
-        setCartItems(JSON.parse(savedCart));
-      } catch (e) {
-        console.error("Failed to parse cart", e);
-      }
+      try { setCartItems(JSON.parse(savedCart)); } catch (e) { console.error("Failed to parse cart", e); }
     }
   }, []);
 
-  // Save to local storage on change
   useEffect(() => {
     localStorage.setItem('entropy_cart', JSON.stringify(cartItems));
   }, [cartItems]);
@@ -54,7 +49,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
       return [...prev, newItem];
     });
-    setIsCartOpen(true); // Open drawer on add
+    setIsCartOpen(true);
   };
 
   const removeFromCart = (itemId: string, size: string) => {
@@ -67,15 +62,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const itemCount = cartItems.reduce((total, item) => total + item.quantity, 0);
 
   return (
-    <CartContext.Provider value={{
-      cartItems,
-      isCartOpen,
-      addToCart,
-      removeFromCart,
-      toggleCart,
-      cartTotal,
-      itemCount
-    }}>
+    <CartContext.Provider value={{ cartItems, isCartOpen, addToCart, removeFromCart, toggleCart, cartTotal, itemCount }}>
       {children}
     </CartContext.Provider>
   );
@@ -83,8 +70,6 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
 export const useCart = () => {
   const context = useContext(CartContext);
-  if (context === undefined) {
-    throw new Error('useCart must be used within a CartProvider');
-  }
+  if (context === undefined) throw new Error('useCart must be used within a CartProvider');
   return context;
 };

@@ -13,6 +13,7 @@ interface ProductData {
   description: string;
   features: string[];
   images: string[];
+  variants: Array<{ id: string; title: string; available: boolean; price: number }>;
 }
 
 const MOCK_PRODUCT: ProductData = {
@@ -25,6 +26,12 @@ const MOCK_PRODUCT: ProductData = {
     "https://images.unsplash.com/photo-1576566588028-4147f3842f27?q=80&w=1000&auto=format&fit=crop", 
     "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?q=80&w=1000&auto=format&fit=crop",
     "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=1000&auto=format&fit=crop"
+  ],
+  variants: [
+    { id: "mock-v-s", title: "S", available: true, price: 45.00 },
+    { id: "mock-v-m", title: "M", available: true, price: 45.00 },
+    { id: "mock-v-l", title: "L", available: true, price: 45.00 },
+    { id: "mock-v-xl", title: "XL", available: true, price: 45.00 },
   ]
 };
 
@@ -57,8 +64,14 @@ const Product = () => {
                     price: parseFloat(p.priceRange.minVariantPrice.amount),
                     description: p.description,
                     features: ["100% Cotton", "Imported"],
-                    // FIXED: Using images instead of media for stability
-                    images: p.images.edges.map((e: any) => e.node.url)
+                    images: p.images.edges.map((e: any) => e.node.url),
+                    // NEW: Mapping real variants
+                    variants: p.variants.edges.map((e: any) => ({
+                        id: e.node.id,
+                        title: e.node.title,
+                        available: e.node.availableForSale,
+                        price: parseFloat(e.node.price.amount)
+                    }))
                 });
             }
         } catch (e) {
@@ -79,10 +92,16 @@ const Product = () => {
         alert("SELECT_SIZE_REQUIRED_//"); 
         return;
     }
+    
+    // Find the variant object for the selected size
+    const selectedVariant = product.variants.find(v => v.title === selectedSize);
+    if (!selectedVariant) return;
+
     addToCart({
         id: product.id,
+        variantId: selectedVariant.id, // CRITICAL FIX: Storing real variant ID
         name: product.name,
-        price: product.price,
+        price: selectedVariant.price,
         image: product.images[0],
         size: selectedSize,
         quantity: 1
@@ -128,11 +147,23 @@ const Product = () => {
                         </div>
                     </div>
 
+                    {/* DYNAMIC VARIANTS SELECTOR */}
                     <div className="space-y-2">
-                        <label className="text-[10px] font-bold tracking-widest text-static-gray block mb-1">SIZE_SELECT_//</label>
+                        <label className="text-[10px] font-bold tracking-widest text-static-gray block mb-1">VARIANT_SELECT_//</label>
                         <div className="grid grid-cols-4 gap-2">
-                            {['S', 'M', 'L', 'XL'].map((size) => (
-                                <button key={size} onClick={() => setSelectedSize(size)} className={`h-10 border flex items-center justify-center font-mono text-xs transition-all duration-200 ${selectedSize === size ? 'bg-white text-black border-white' : 'bg-transparent text-static-gray border-white/20 hover:border-white hover:text-white'}`}>[{size}]</button>
+                            {product.variants.map((variant) => (
+                                <button 
+                                    key={variant.id}
+                                    onClick={() => setSelectedSize(variant.title)}
+                                    disabled={!variant.available}
+                                    className={`h-10 border flex items-center justify-center font-mono text-xs transition-all duration-200 ${
+                                        selectedSize === variant.title 
+                                        ? 'bg-white text-black border-white' 
+                                        : !variant.available ? 'opacity-20 cursor-not-allowed border-red-500 line-through' : 'bg-transparent text-static-gray border-white/20 hover:border-white hover:text-white'
+                                    }`}
+                                >
+                                    [{variant.title}]
+                                </button>
                             ))}
                         </div>
                     </div>
