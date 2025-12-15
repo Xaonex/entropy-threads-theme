@@ -1,13 +1,50 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-// import { SplitText } from '../components/react-bits/SplitText'; 
 import DecryptedText from '../components/react-bits/DecryptedText';
 import ScrollVelocity from '../components/react-bits/ScrollVelocity';
 import TextPressure from '../components/react-bits/TextPressure';
 import { GlowCard } from '../components/react-bits/GlowCard';
 import { ChromaGrid } from '../components/react-bits/ChromaGrid';
 import { Magnet } from '../components/react-bits/Magnet';
+import { shopifyFetch, PRODUCTS_QUERY } from '../lib/shopify';
+
+interface HomeProduct {
+  id: string;
+  handle: string;
+  title: string;
+  description: string;
+}
 
 const Home = () => {
+  const [featured, setFeatured] = useState<HomeProduct[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadFeatured() {
+        try {
+            const data: any = await shopifyFetch({
+                query: PRODUCTS_QUERY,
+                variables: { first: 3 }
+            });
+
+            if (data && data.products) {
+                const mapped = data.products.edges.map((e: any) => ({
+                    id: e.node.id,
+                    handle: e.node.handle,
+                    title: e.node.title,
+                    description: e.node.description || "ARTIFACT_DESCRIPTION_MISSING"
+                }));
+                setFeatured(mapped);
+            }
+        } catch (e) {
+            console.warn("Failed to load featured products", e);
+        } finally {
+            setLoading(false);
+        }
+    }
+    loadFeatured();
+  }, []);
+
   return (
     <div className="w-full">
       {/* HERO SECTION */}
@@ -25,8 +62,6 @@ const Home = () => {
                 <DecryptedText text="SYSTEM_ONLINE // V.2.0.4" speed={30} characters="X010101" />
              </div>
              
-             {/* REDUCED SIZE: text-9xl -> text-7xl */}
-             {/* FALLBACK: Static Text to fix "Lonely E" bug */}
              <h1 className="text-6xl md:text-7xl font-black tracking-tighter leading-none mix-blend-difference">
                 <span className="text-white">ENTROPY THREADS</span>
              </h1>
@@ -59,25 +94,34 @@ const Home = () => {
                 CURRENT_ARTIFACTS
              </h2>
 
-             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <GlowCard glowColor="#00ff00" intensity="medium">
-                    {/* FIXED: Wrapped in Link for Interactivity */}
-                    <Link to="/product/void-01" className="block h-full cursor-pointer">
-                        <div className="h-96 flex flex-col justify-between p-6 bg-off-black relative group">
-                            <div className="absolute top-4 right-4 text-xs font-mono text-white/50 border border-white/20 px-2 rounded">
-                                01
-                            </div>
-                            <div className="flex-1 flex items-center justify-center">
-                                <span className="text-6xl font-black text-white/5 group-hover:text-white/20 transition-colors">VOID</span>
-                            </div>
-                            <div>
-                                <h3 className="text-xl font-bold text-white mb-2">SIGNAL TEE</h3>
-                                <p className="font-mono text-sm text-gray-400">HEAVYWEIGHT COTTON // STATIC PRINT</p>
-                            </div>
-                        </div>
-                    </Link>
-                </GlowCard>
-             </div>
+             {loading ? (
+                <div className="font-mono text-static-gray animate-pulse">LOADING_DATA_STREAM...</div>
+             ) : (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    {featured.length > 0 ? featured.map((p, i) => (
+                        <GlowCard key={p.id} glowColor="#00ff00" intensity="medium">
+                            <Link to={`/product/${p.handle}`} className="block h-full cursor-pointer">
+                                <div className="h-96 flex flex-col justify-between p-6 bg-off-black relative group">
+                                    <div className="absolute top-4 right-4 text-xs font-mono text-white/50 border border-white/20 px-2 rounded">
+                                        {String(i + 1).padStart(2, '0')}
+                                    </div>
+                                    <div className="flex-1 flex items-center justify-center">
+                                        <span className="text-6xl font-black text-white/5 group-hover:text-white/20 transition-colors">
+                                            {p.title.split(" ")[0] || "VOID"}
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <h3 className="text-xl font-bold text-white mb-2">{p.title}</h3>
+                                        <p className="font-mono text-sm text-gray-400 truncate">{p.description}</p>
+                                    </div>
+                                </div>
+                            </Link>
+                        </GlowCard>
+                    )) : (
+                        <div className="text-static-gray font-mono">NO_ARTIFACTS_FOUND // CHECK_CONNECTION</div>
+                    )}
+                </div>
+             )}
         </div>
       </section>
 
