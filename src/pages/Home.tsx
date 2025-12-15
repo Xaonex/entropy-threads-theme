@@ -18,6 +18,7 @@ interface HomeProduct {
 const Home = () => {
   const [featured, setFeatured] = useState<HomeProduct[]>([]);
   const [loading, setLoading] = useState(true);
+  const [debugError, setDebugError] = useState<string | null>(null);
 
   useEffect(() => {
     async function loadFeatured() {
@@ -27,7 +28,17 @@ const Home = () => {
                 variables: { first: 3 }
             });
 
-            if (data && data.products) {
+            if (!data) {
+                setDebugError("ENV_VARS_MISSING // CHECK_VERCEL_SETTINGS");
+                return;
+            }
+
+            if (data.errors) {
+                 setDebugError(`API_ERROR: ${data.errors[0].message}`);
+                 return;
+            }
+
+            if (data.products) {
                 const mapped = data.products.edges.map((e: any) => ({
                     id: e.node.id,
                     handle: e.node.handle,
@@ -36,8 +47,9 @@ const Home = () => {
                 }));
                 setFeatured(mapped);
             }
-        } catch (e) {
+        } catch (e: any) {
             console.warn("Failed to load featured products", e);
+            setDebugError(e.message || "UNKNOWN_CONNECTION_ERROR");
         } finally {
             setLoading(false);
         }
@@ -98,7 +110,15 @@ const Home = () => {
                 <div className="font-mono text-static-gray animate-pulse">LOADING_DATA_STREAM...</div>
              ) : (
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    {featured.length > 0 ? featured.map((p, i) => (
+                    {debugError ? (
+                        <div className="col-span-full border border-signal-red p-4 text-signal-red font-mono text-center">
+                            <p className="font-bold">SYSTEM_ALERT // CONNECTION_FAILURE</p>
+                            <p className="text-sm mt-2">{debugError}</p>
+                            <p className="text-xs text-static-gray mt-4">
+                                CONFIG_REQUIRED: Add VITE_SHOPIFY_STORE_DOMAIN & VITE_SHOPIFY_STOREFRONT_ACCESS_TOKEN to Vercel/Netlify.
+                            </p>
+                        </div>
+                    ) : featured.length > 0 ? featured.map((p, i) => (
                         <GlowCard key={p.id} glowColor="#00ff00" intensity="medium">
                             <Link to={`/product/${p.handle}`} className="block h-full cursor-pointer">
                                 <div className="h-96 flex flex-col justify-between p-6 bg-off-black relative group">
