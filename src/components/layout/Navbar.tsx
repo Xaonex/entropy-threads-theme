@@ -12,7 +12,7 @@ export const Navbar = () => {
       
       <div className="hidden md:flex items-center space-x-8">
         <Link to="/shop" className="text-sm font-medium text-gray-400 hover:text-signal-red transition-colors">SHOP</Link>
-        <Link to="/product/void-01" className="text-sm font-medium text-gray-400 hover:text-signal-red transition-colors">DROP_00</Link>
+        <Link to="/shop" className="text-sm font-medium text-gray-400 hover:text-signal-red transition-colors">DROP_00</Link>
         <Link to="/manifesto" className="text-sm font-medium text-gray-400 hover:text-signal-red transition-colors">MANIFESTO</Link>
       </div>
 
