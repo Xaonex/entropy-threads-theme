@@ -377,13 +377,9 @@
             "color_scheme": "scheme-1"
           }
         }
-<<<<<<< HEAD
       },
       "favicon": "favicon.png",
       "brand_image": "logo.png"
-=======
-      }
->>>>>>> dbb66193f8aafbec3ba326ed1f177235457619f3
     }
   }
 }
