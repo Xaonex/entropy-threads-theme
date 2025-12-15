@@ -26,6 +26,7 @@ export const PRODUCTS_QUERY = `
           id
           title
           handle
+          description
           priceRange { minVariantPrice { amount currencyCode } }
           images(first: 1) { edges { node { url altText } } }
         }
@@ -58,6 +59,21 @@ export const PRODUCT_BY_HANDLE_QUERY = `
             price { amount }
           }
         }
+      }
+    }
+  }
+`;
+
+export const CHECKOUT_CREATE_MUTATION = `
+  mutation checkoutCreate($input: CheckoutCreateInput!) {
+    checkoutCreate(input: $input) {
+      checkout {
+        webUrl
+      }
+      checkoutUserErrors {
+        code
+        field
+        message
       }
     }
   }

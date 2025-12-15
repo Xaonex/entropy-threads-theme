@@ -14,28 +14,10 @@ interface ShopProduct {
   available: boolean;
 }
 
-const MOCK_PRODUCTS: ShopProduct[] = [
-    {
-        id: '1',
-        handle: 'void-01',
-        title: 'VOID-01 // SIGNAL TEE',
-        price: 45.00,
-        image: 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?q=80&w=1000&auto=format&fit=crop',
-        available: true
-    },
-    {
-        id: '2',
-        handle: 'node-03',
-        title: 'NODE-03 // GLITCH HOODIE',
-        price: 85.00,
-        image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=1000&auto=format&fit=crop',
-        available: false
-    }
-];
-
 const Shop = () => {
   const [products, setProducts] = useState<ShopProduct[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     async function fetchProducts() {
@@ -51,16 +33,16 @@ const Shop = () => {
                     handle: e.node.handle,
                     title: e.node.title,
                     price: parseFloat(e.node.priceRange.minVariantPrice.amount),
-                    image: e.node.images.edges[0]?.node.url || MOCK_PRODUCTS[0].image,
-                    available: true // Simplified
+                    image: e.node.images.edges[0]?.node.url || "",
+                    available: true
                 }));
                 setProducts(mapped);
             } else {
-                setProducts(MOCK_PRODUCTS);
+                setError(true);
             }
         } catch (e) {
-            console.warn("Using Mock Data for Shop", e);
-            setProducts(MOCK_PRODUCTS);
+            console.warn("Shop Load Failed", e);
+            setError(true);
         } finally {
             setLoading(false);
         }
@@ -106,6 +88,12 @@ const Shop = () => {
       <section className="container mx-auto px-6 py-8">
         {loading ? (
             <div className="font-mono text-static-gray animate-pulse">LOADING_GRID...</div>
+        ) : error || products.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-24 text-center border border-white/10 bg-void-black/50">
+                <h3 className="text-2xl font-black text-white/20 mb-2">SIGNAL_LOST</h3>
+                <p className="font-mono text-static-gray text-sm">ARCHIVE_EMPTY // OR CONNECTION_FAILED</p>
+                <p className="font-mono text-xs text-signal-red mt-4">ERROR_CODE: 503_VOID</p>
+            </div>
         ) : (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-8">
                 {products.map((p, i) => (

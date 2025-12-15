@@ -1,17 +1,47 @@
+import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCart } from '../../context/CartContext';
 import { X, Plus, Minus } from 'lucide-react';
 import { Magnet } from '../react-bits/Magnet';
+import { shopifyFetch, CHECKOUT_CREATE_MUTATION } from '../../lib/shopify';
 
 const FREE_SHIPPING_THRESHOLD = 150;
 
 export const CartDrawer = () => {
   const { isCartOpen, toggleCart, cartItems, removeFromCart, addToCart, cartTotal, itemCount } = useCart();
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
   
   const progress = Math.min((cartTotal / FREE_SHIPPING_THRESHOLD) * 100, 100);
   const isFreeShipping = cartTotal >= FREE_SHIPPING_THRESHOLD;
   const totalSegments = 20;
   const filledSegments = Math.floor((progress / 100) * totalSegments);
+
+  const handleCheckout = async () => {
+    setIsCheckingOut(true);
+    try {
+        const lineItems = cartItems.map(item => ({
+            variantId: item.variantId,
+            quantity: item.quantity
+        }));
+
+        const data: any = await shopifyFetch({
+            query: CHECKOUT_CREATE_MUTATION,
+            variables: { input: { lineItems } }
+        });
+
+        if (data && data.checkoutCreate && data.checkoutCreate.checkout) {
+            window.location.href = data.checkoutCreate.checkout.webUrl;
+        } else {
+             console.error("Checkout Errors:", data?.checkoutCreate?.checkoutUserErrors);
+             alert("SYSTEM_ERROR // CHECKOUT_INITIATION_FAILED");
+        }
+    } catch (e) {
+        console.error("Checkout Exception", e);
+        alert("CONNECTION_LOST // UNABLE_TO_TRANSMIT");
+    } finally {
+        setIsCheckingOut(false);
+    }
+  };
 
   return (
     <AnimatePresence>
@@ -131,10 +161,17 @@ export const CartDrawer = () => {
                     
                     <Magnet strength={0.2} range={100}>
                         <button 
-                            onClick={() => alert("SYSTEM_MESSAGE // CHECKOUT_GATEWAY_OFFLINE_FOR_DEMO")}
-                            className="w-full py-4 bg-white text-black font-black tracking-[0.2em] hover:bg-cyan-glitch transition-colors"
+                            onClick={handleCheckout}
+                            disabled={isCheckingOut}
+                            className={`w-full py-4 font-black tracking-[0.2em] transition-all relative overflow-hidden ${
+                                isCheckingOut ? "bg-white/10 text-white cursor-wait" : "bg-white text-black hover:bg-cyan-glitch"
+                            }`}
                         >
-                            TRANSMIT ORDER
+                            {isCheckingOut ? (
+                                <span className="animate-pulse">ESTABLISHING_UPLINK...</span>
+                            ) : (
+                                "TRANSMIT ORDER"
+                            )}
                         </button>
                     </Magnet>
                     
