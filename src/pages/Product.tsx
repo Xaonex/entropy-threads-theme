@@ -1,9 +1,10 @@
-import { useState } from 'react';
-// import { useParams } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import DecryptedText from '../components/react-bits/DecryptedText';
 import { Magnet } from '../components/react-bits/Magnet';
 import CountUp from '../components/react-bits/CountUp';
 import { useCart } from '../context/CartContext';
+import { shopifyFetch, PRODUCT_BY_HANDLE_QUERY } from '../lib/shopify';
 
 interface ProductData {
   id: string;
@@ -28,12 +29,47 @@ const MOCK_PRODUCT: ProductData = {
 };
 
 const Product = () => {
-  // const { id } = useParams();
+  const { id } = useParams(); // Should be handle in real app
+  const [product, setProduct] = useState<ProductData>(MOCK_PRODUCT);
+  const [loading, setLoading] = useState(true);
+  
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"details" | "sizing" | null>(null);
   const { addToCart } = useCart();
 
-  const product = MOCK_PRODUCT; 
+  useEffect(() => {
+    async function loadData() {
+        // If "void-01" or undefined, stick to mock. Real handle would be different.
+        if (!id || id === 'void-01') {
+            setLoading(false);
+            return;
+        }
+
+        try {
+            const data: any = await shopifyFetch({
+                query: PRODUCT_BY_HANDLE_QUERY,
+                variables: { handle: id }
+            });
+            
+            if (data && data.product) {
+                const p = data.product;
+                setProduct({
+                    id: p.id,
+                    name: p.title,
+                    price: parseFloat(p.priceRange.minVariantPrice.amount),
+                    description: p.description,
+                    features: ["100% Cotton", "Imported"], // Shopify doesn't always have features list easily
+                    images: p.media.edges.map((e: any) => e.node.image.url)
+                });
+            }
+        } catch (e) {
+            console.error("Failed to load product", e);
+        } finally {
+            setLoading(false);
+        }
+    }
+    loadData();
+  }, [id]);
 
   const toggleTab = (tab: "details" | "sizing") => {
     setActiveTab(activeTab === tab ? null : tab);
@@ -55,12 +91,14 @@ const Product = () => {
     });
   };
 
+  if (loading) return <div className="min-h-screen bg-void-black flex items-center justify-center text-white font-mono">LOADING_ARTIFACT...</div>;
+
   return (
     <div className="pt-24 min-h-screen bg-void-black text-white">
       
       {/* MOBILE HEADER */}
       <div className="md:hidden px-6 pb-6">
-        <h1 className="text-2xl font-black tracking-tighter mb-2"> {/* Reduced from 3xl */}
+        <h1 className="text-2xl font-black tracking-tighter mb-2">
             <DecryptedText text={product.name} speed={50} characters="X010101" />
         </h1>
         <p className="text-lg text-static-gray">${product.price.toFixed(2)}</p>
@@ -87,13 +125,11 @@ const Product = () => {
 
             {/* RIGHT: DATA PANEL (40%) - STICKY */}
             <div className="w-full md:w-[40%] px-6 md:px-0 relative">
-                {/* REDUCED SPACING: space-y-8 -> space-y-4 */}
                 <div className="sticky top-28 space-y-4 pb-12">
                     
                     {/* TITLE BLOCK */}
-                    <div className="hidden md:block border-b border-white/20 pb-6"> {/* Reduced pb */}
+                    <div className="hidden md:block border-b border-white/20 pb-6">
                         <div className="flex justify-between items-start mb-2">
-                            {/* REDUCED TITLE SIZE: text-5xl -> text-3xl */}
                             <h1 className="text-3xl font-black tracking-tighter leading-none max-w-md">
                                 <DecryptedText text={product.name} speed={50} characters="X010101" />
                             </h1>
@@ -114,7 +150,6 @@ const Product = () => {
                                 <button 
                                     key={size}
                                     onClick={() => setSelectedSize(size)}
-                                    // Technical Key Style: height 10 (40px approx), small text
                                     className={`h-10 border flex items-center justify-center font-mono text-xs transition-all duration-200 ${
                                         selectedSize === size 
                                         ? 'bg-white text-black border-white' 
@@ -130,7 +165,6 @@ const Product = () => {
                     {/* ACTIONS - COMPACT */}
                     <div className="pt-2 space-y-2">
                         <Magnet strength={0.2} range={50}>
-                             {/* COMPACT BUTTON: h-16 -> h-12 (approx 48px) */}
                             <button 
                                 onClick={handleAddToCart}
                                 className="w-full h-12 bg-signal-red text-black font-black tracking-widest text-sm hover:bg-white transition-colors duration-300 relative overflow-hidden group"
