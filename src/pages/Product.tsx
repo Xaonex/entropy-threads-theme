@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import DecryptedText from '../components/react-bits/DecryptedText';
 import { Magnet } from '../components/react-bits/Magnet';
 import CountUp from '../components/react-bits/CountUp';
@@ -16,39 +16,18 @@ interface ProductData {
   variants: Array<{ id: string; title: string; available: boolean; price: number }>;
 }
 
-const MOCK_PRODUCT: ProductData = {
-  id: "void-01",
-  name: "VOID-01 // SIGNAL TEE",
-  price: 45.00,
-  description: "Heavyweight cotton structure. 280gsm. The signal is lost, but the noise remains. Features high-density screen print on back and puff print chest mark.",
-  features: ["100% Cotton", "Oversized Fit", "Drop Shoulder", "Pre-shrunk"],
-  images: [
-    "https://images.unsplash.com/photo-1576566588028-4147f3842f27?q=80&w=1000&auto=format&fit=crop", 
-    "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?q=80&w=1000&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=1000&auto=format&fit=crop"
-  ],
-  variants: [
-    { id: "mock-v-s", title: "S", available: true, price: 45.00 },
-    { id: "mock-v-m", title: "M", available: true, price: 45.00 },
-    { id: "mock-v-l", title: "L", available: true, price: 45.00 },
-    { id: "mock-v-xl", title: "XL", available: true, price: 45.00 },
-  ]
-};
-
 const Product = () => {
   const { id } = useParams();
-  const [product, setProduct] = useState<ProductData>(MOCK_PRODUCT);
+  const [product, setProduct] = useState<ProductData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"details" | "sizing" | null>(null);
   const { addToCart } = useCart();
 
   useEffect(() => {
     async function loadData() {
-        if (!id || id === 'void-01') {
-            setLoading(false);
-            return;
-        }
+        if (!id) return;
 
         try {
             const data: any = await shopifyFetch({
@@ -65,7 +44,6 @@ const Product = () => {
                     description: p.description,
                     features: ["100% Cotton", "Imported"],
                     images: p.images.edges.map((e: any) => e.node.url),
-                    // NEW: Mapping real variants
                     variants: p.variants.edges.map((e: any) => ({
                         id: e.node.id,
                         title: e.node.title,
@@ -73,9 +51,12 @@ const Product = () => {
                         price: parseFloat(e.node.price.amount)
                     }))
                 });
+            } else {
+                setError("ARTIFACT_NOT_FOUND");
             }
         } catch (e) {
             console.error("Failed to load product", e);
+            setError("SIGNAL_LOST");
         } finally {
             setLoading(false);
         }
@@ -88,18 +69,17 @@ const Product = () => {
   };
 
   const handleAddToCart = () => {
-    if (!selectedSize) {
+    if (!product || !selectedSize) {
         alert("SELECT_SIZE_REQUIRED_//"); 
         return;
     }
     
-    // Find the variant object for the selected size
     const selectedVariant = product.variants.find(v => v.title === selectedSize);
     if (!selectedVariant) return;
 
     addToCart({
         id: product.id,
-        variantId: selectedVariant.id, // CRITICAL FIX: Storing real variant ID
+        variantId: selectedVariant.id,
         name: product.name,
         price: selectedVariant.price,
         image: product.images[0],
@@ -109,6 +89,16 @@ const Product = () => {
   };
 
   if (loading) return <div className="min-h-screen bg-void-black flex items-center justify-center text-white font-mono">LOADING_ARTIFACT...</div>;
+
+  if (error || !product) {
+      return (
+          <div className="min-h-screen bg-void-black flex flex-col items-center justify-center text-white font-mono space-y-4">
+              <h1 className="text-4xl font-black text-signal-red">404 // SIGNAL LOST</h1>
+              <p className="text-static-gray">THE ARTIFACT YOU SEEK DOES NOT EXIST IN THIS TIMELINE.</p>
+              <Link to="/shop" className="border border-white px-6 py-2 hover:bg-white hover:text-black transition-colors">RETURN TO ARCHIVE</Link>
+          </div>
+      )
+  }
 
   return (
     <div className="pt-24 min-h-screen bg-void-black text-white">
