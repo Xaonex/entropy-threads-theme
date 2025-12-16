@@ -26,7 +26,7 @@ function useIsMobile() {
 // --- COMPONENTS ---
 
 // 1. PRODUCT CARD (HUD STYLING)
-const ProductCard = ({ p, isMobile, index }: { p: any; isMobile: boolean; index: number }) => {
+const ProductCard = ({ p, isMobile }: { p: any; isMobile: boolean;  }) => {
     const ref = useRef(null);
     const isInView = useInView(ref, { margin: "-40% 0px -40% 0px" });
 
@@ -155,7 +155,7 @@ const Home = () => {
         {!isMobile && (
             <>
                 <div className="absolute top-32 left-8 font-mono text-[9px] text-white/20 flex flex-col gap-1 pointer-events-none">
-                    <span>COORDS: 34.0522° N, 118.2437° W</span>
+                    <span>COORDS: 34.0522Â° N, 118.2437Â° W</span>
                     <span>SECTOR: 7G // VOID_LAYER</span>
                     <span>GRID_OFFSET: 0.0045</span>
                 </div>
@@ -225,7 +225,7 @@ const Home = () => {
                             </p>
                         </div>
                     ) : featured.length > 0 ? featured.map((p, i) => (
-                        <ProductCard key={p.id} p={p} index={i} isMobile={isMobile} />
+                        <ProductCard key={p.id} p={p}  isMobile={isMobile} />
                     )) : (
                         <div className="col-span-full text-static-gray font-mono text-center py-12 border border-white/10">
                             NO_ARTIFACTS_FOUND // CHECK_SHOPIFY_INVENTORY
@@ -271,7 +271,7 @@ const Home = () => {
             </div>
             
             <div className="text-[9px] text-white/10 font-mono mt-12">
-                ENTROPY THREADS © 2024 // ALL RIGHTS RESERVED
+                ENTROPY THREADS Â© 2024 // ALL RIGHTS RESERVED
             </div>
          </div>
       </section>
