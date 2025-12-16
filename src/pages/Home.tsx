@@ -155,7 +155,7 @@ const Home = () => {
         {!isMobile && (
             <>
                 <div className="absolute top-32 left-8 font-mono text-[9px] text-white/20 flex flex-col gap-1 pointer-events-none">
-                    <span>COORDS: 34.0522Â° N, 118.2437Â° W</span>
+                    <span>COORDS: 34.0522Ã‚Â° N, 118.2437Ã‚Â° W</span>
                     <span>SECTOR: 7G // VOID_LAYER</span>
                     <span>GRID_OFFSET: 0.0045</span>
                 </div>
@@ -224,7 +224,7 @@ const Home = () => {
                                 CONFIG_REQUIRED: Add VITE_SHOPIFY_STORE_DOMAIN & VITE_SHOPIFY_STOREFRONT_ACCESS_TOKEN to Vercel/Netlify.
                             </p>
                         </div>
-                    ) : featured.length > 0 ? featured.map((p, i) => (
+                    ) : featured.length > 0 ? featured.map((p) => (
                         <ProductCard key={p.id} p={p}  isMobile={isMobile} />
                     )) : (
                         <div className="col-span-full text-static-gray font-mono text-center py-12 border border-white/10">
@@ -271,7 +271,7 @@ const Home = () => {
             </div>
             
             <div className="text-[9px] text-white/10 font-mono mt-12">
-                ENTROPY THREADS Â© 2024 // ALL RIGHTS RESERVED
+                ENTROPY THREADS Ã‚Â© 2024 // ALL RIGHTS RESERVED
             </div>
          </div>
       </section>
