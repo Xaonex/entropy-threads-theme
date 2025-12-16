@@ -254,11 +254,8 @@ const Home = () => {
             </div>
             
             <div className="text-[9px] text-white/10 font-mono mt-12 flex flex-col items-center gap-2">
-                <span>ENTROPY THREADS © 2024 // ALL RIGHTS RESERVED</span>
-                {/* FOOTER VOLATILE STATUS */}
-                <div className="scale-75 origin-center">
-                    <VolatileStatus />
-                </div>
+                <span>ENTROPY THREADS Â© 2024 // ALL RIGHTS RESERVED</span>
+
             </div>
          </div>
       </section>
