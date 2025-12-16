@@ -6,7 +6,7 @@ import TypewriterText from '../components/react-bits/TypewriterText';
 import GlitchText from '../components/react-bits/GlitchText';
 import DotGrid from '../components/react-bits/DotGrid';
 import { GlowCard } from '../components/react-bits/GlowCard';
-import { ChromaGrid } from '../components/react-bits/ChromaGrid';
+import DistortedGrid from '../components/react-bits/DistortedGrid'; // REPLACED ChromaGrid
 import { Magnet } from '../components/react-bits/Magnet';
 import VolatileStatus from '../components/ui/VolatileStatus';
 import { shopifyFetch, PRODUCTS_QUERY } from '../lib/shopify';
@@ -23,23 +23,13 @@ function useIsMobile() {
     return isMobile;
 }
 
-// --- TYPES ---
-interface HomeProduct {
-  id: string;
-  handle: string;
-  title: string;
-  description: string;
-  image: string;
-}
+// --- COMPONENTS ---
 
-// 2. PRODUCT CARD (With strict Mobile Scanner Logic)
-const ProductCard = ({ p, isMobile, index }: { p: HomeProduct; isMobile: boolean; index: number }) => {
+// 1. PRODUCT CARD (HUD STYLING)
+const ProductCard = ({ p, isMobile, index }: { p: any; isMobile: boolean; index: number }) => {
     const ref = useRef(null);
-    // STAGE 1: Strict "Sweet Spot" 
     const isInView = useInView(ref, { margin: "-40% 0px -40% 0px" });
 
-    // Logic: Mobile + SweetSpot = Color. Mobile + Outside = Grayscale.
-    // Desktop: Always Grayscale unless Hovered.
     const imageClass = isMobile
         ? (isInView ? "grayscale-0 opacity-100" : "grayscale opacity-80")
         : "grayscale group-hover:grayscale-0 opacity-60 group-hover:opacity-100";
@@ -52,6 +42,12 @@ const ProductCard = ({ p, isMobile, index }: { p: HomeProduct; isMobile: boolean
         <GlowCard glowColor="#00ff00" intensity="medium">
             <Link to={`/product/${p.handle}`} className="block w-full h-full cursor-pointer relative overflow-hidden group">
                 
+                {/* HUD CORNERS */}
+                <div className="absolute top-2 left-2 w-4 h-4 border-l-2 border-t-2 border-white/50 z-20 transition-all group-hover:w-6 group-hover:h-6 group-hover:border-signal-red" />
+                <div className="absolute top-2 right-2 w-4 h-4 border-r-2 border-t-2 border-white/50 z-20 transition-all group-hover:w-6 group-hover:h-6 group-hover:border-signal-red" />
+                <div className="absolute bottom-2 left-2 w-4 h-4 border-l-2 border-b-2 border-white/50 z-20 transition-all group-hover:w-6 group-hover:h-6 group-hover:border-signal-red" />
+                <div className="absolute bottom-2 right-2 w-4 h-4 border-r-2 border-b-2 border-white/50 z-20 transition-all group-hover:w-6 group-hover:h-6 group-hover:border-signal-red" />
+
                 {/* BACKGROUND IMAGE CONTAINER */}
                 {p.image && (
                     <motion.div 
@@ -69,9 +65,11 @@ const ProductCard = ({ p, isMobile, index }: { p: HomeProduct; isMobile: boolean
                 
                 {/* CONTENT CONTAINER - Fixed Aspect Ratio */}
                 <div className="h-96 md:aspect-[4/5] flex flex-col justify-between p-6 relative z-10 w-full">
-                    <div className="absolute top-4 right-4 text-xs font-mono text-white/50 border border-white/20 px-2 rounded backdrop-blur-sm">
-                        {String(index + 1).padStart(2, '0')}
+                    {/* TOP META */}
+                    <div className="absolute top-4 right-4 text-[10px] font-mono text-white/50 bg-black/50 px-2 py-1 backdrop-blur-sm border border-white/10 group-hover:text-signal-red group-hover:border-signal-red transition-colors">
+                        [ REF_ID: {p.id.slice(-4)} ]
                     </div>
+
                     <div className="flex-1 flex items-center justify-center">
                         {!p.image && (
                             <span className="text-6xl font-black text-white/5 group-hover:text-white/20 transition-colors">
@@ -79,9 +77,16 @@ const ProductCard = ({ p, isMobile, index }: { p: HomeProduct; isMobile: boolean
                             </span>
                         )}
                     </div>
+                    
+                    {/* BOTTOM TEXT */}
                     <div className="w-full">
-                        <h3 className="text-xl font-bold text-white mb-2 mix-blend-difference break-words">{p.title}</h3>
-                        <p className="font-mono text-sm text-gray-400 truncate mix-blend-difference max-w-full">{p.description}</p>
+                         <div className="flex items-center gap-2 mb-2">
+                             <div className="w-1 h-3 bg-signal-red opacity-0 group-hover:opacity-100 transition-opacity" />
+                             <h3 className="text-xl font-bold text-white mix-blend-difference break-words leading-none">{p.title}</h3>
+                         </div>
+                        <p className="font-mono text-[10px] text-gray-400 truncate mix-blend-difference max-w-full uppercase tracking-widest">
+                             // {p.description ? p.description.substring(0, 30) : "NO_DATA"}...
+                        </p>
                     </div>
                 </div>
             </Link>
@@ -92,7 +97,7 @@ const ProductCard = ({ p, isMobile, index }: { p: HomeProduct; isMobile: boolean
 
 // --- MAIN PAGE ---
 const Home = () => {
-  const [featured, setFeatured] = useState<HomeProduct[]>([]);
+  const [featured, setFeatured] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [debugError, setDebugError] = useState<string | null>(null);
   const isMobile = useIsMobile();
@@ -137,22 +142,34 @@ const Home = () => {
   return (
     <div className="w-full max-w-[100vw] overflow-x-hidden">
       
-      {/* HERO SECTION - COMPACT MOBILE */}
+      {/* HERO SECTION - COMPACT MOBILE + TECHNICAL DEBRIS */}
       <section className="relative min-h-[60vh] md:h-screen flex items-center justify-center overflow-hidden bg-void-black scanline px-4 py-12 md:py-0">
         
         {/* Background Elements */}
         <div className="absolute inset-0 z-0">
-             <ChromaGrid 
-                gridSize={40} 
-                aberrationAmount={5} 
-                colors={['#1a1a1a', '#2a2a2a', '#0a0a0a']} 
-             />
-             <div className="noise-overlay" />
+             <DistortedGrid /> 
+             {/* Global Noise is now in App.tsx layout */}
         </div>
         
+        {/* TECHNICAL DEBRIS (Negative Space) */}
+        {!isMobile && (
+            <>
+                <div className="absolute top-32 left-8 font-mono text-[9px] text-white/20 flex flex-col gap-1 pointer-events-none">
+                    <span>COORDS: 34.0522° N, 118.2437° W</span>
+                    <span>SECTOR: 7G // VOID_LAYER</span>
+                    <span>GRID_OFFSET: 0.0045</span>
+                </div>
+                <div className="absolute bottom-32 right-8 font-mono text-[9px] text-white/20 flex flex-col gap-1 pointer-events-none text-right">
+                    <span>SYS_MEMORY: 64TB // OVERFLOW</span>
+                    <span>RENDER_MODE: CANV_2D</span>
+                    <span>STATUS: UNSTABLE</span>
+                </div>
+            </>
+        )}
+
         <div className="relative z-10 text-center flex flex-col items-center max-w-full">
              
-             {/* 1. Volatile Version Status - NOW REUSED */}
+             {/* 1. Volatile Version Status */}
              <VolatileStatus />
              
              {/* Main Title */}
@@ -179,7 +196,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* TICKER STRIP - INCREASED VELOCITY (4) */}
+      {/* TICKER STRIP - HIGH VELOCITY */}
       <div className="bg-signal-red text-black py-3 overflow-hidden font-black tracking-tighter border-y border-black">
         <ScrollVelocity 
             velocity={4} 
@@ -219,7 +236,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* FOOTER: TRANSMISSION CAPTURE & VOLATILE STATUS */}
+      {/* FOOTER: TRANSMISSION CAPTURE */}
       <section id="footer" className="relative py-20 px-6 bg-off-black border-t border-white/10 overflow-hidden">
          <div className="absolute inset-0 opacity-20 pointer-events-none">
             <DotGrid gap={24} size={2} dotColor="#ffffff" />
@@ -253,9 +270,8 @@ const Home = () => {
                 </Link>
             </div>
             
-            <div className="text-[9px] text-white/10 font-mono mt-12 flex flex-col items-center gap-2">
-                <span>ENTROPY THREADS Â© 2024 // ALL RIGHTS RESERVED</span>
-
+            <div className="text-[9px] text-white/10 font-mono mt-12">
+                ENTROPY THREADS © 2024 // ALL RIGHTS RESERVED
             </div>
          </div>
       </section>
