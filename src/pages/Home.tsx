@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useInView } from 'framer-motion';
-
 import ScrollVelocity from '../components/react-bits/ScrollVelocity';
 import TypewriterText from '../components/react-bits/TypewriterText';
 import GlitchText from '../components/react-bits/GlitchText';
@@ -9,6 +8,7 @@ import DotGrid from '../components/react-bits/DotGrid';
 import { GlowCard } from '../components/react-bits/GlowCard';
 import { ChromaGrid } from '../components/react-bits/ChromaGrid';
 import { Magnet } from '../components/react-bits/Magnet';
+import VolatileStatus from '../components/ui/VolatileStatus';
 import { shopifyFetch, PRODUCTS_QUERY } from '../lib/shopify';
 
 // --- HOOKS ---
@@ -32,39 +32,10 @@ interface HomeProduct {
   image: string;
 }
 
-// --- COMPONENTS ---
-
-// 1. VOLATILE SYSTEM STATUS
-const VolatileStatus = () => {
-    const [version, setVersion] = useState("2.0.4");
-    const [glitchColor, setGlitchColor] = useState(false);
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            // 20% chance to glitch the version
-            if (Math.random() > 0.8) {
-                const patch = Math.floor(Math.random() * 9);
-                const minor = Math.random() > 0.9 ? Math.floor(Math.random() * 5) : 0;
-                setVersion(`2.${minor}.${patch}`);
-                setGlitchColor(true);
-                setTimeout(() => setGlitchColor(false), 200);
-            }
-        }, 1500);
-        return () => clearInterval(interval);
-    }, []);
-
-    return (
-        <div className={`text-xl md:text-2xl font-mono tracking-widest mb-6 h-8 transition-colors duration-100 ${glitchColor ? 'text-white' : 'text-signal-red'}`}>
-            SYSTEM_ONLINE // V.{version}
-        </div>
-    );
-};
-
 // 2. PRODUCT CARD (With strict Mobile Scanner Logic)
 const ProductCard = ({ p, isMobile, index }: { p: HomeProduct; isMobile: boolean; index: number }) => {
     const ref = useRef(null);
     // STAGE 1: Strict "Sweet Spot" 
-    // Margin "-40% 0px -40% 0px" means the item is only "in view" when it's in the middle 20% of the screen vertical height.
     const isInView = useInView(ref, { margin: "-40% 0px -40% 0px" });
 
     // Logic: Mobile + SweetSpot = Color. Mobile + Outside = Grayscale.
@@ -86,7 +57,6 @@ const ProductCard = ({ p, isMobile, index }: { p: HomeProduct; isMobile: boolean
                     <motion.div 
                         ref={ref}
                         className="absolute inset-0 z-0"
-                        // No strict animation needed here, class switching handles the transition elegantly
                     >
                         <img 
                             src={p.image} 
@@ -168,7 +138,6 @@ const Home = () => {
     <div className="w-full max-w-[100vw] overflow-x-hidden">
       
       {/* HERO SECTION - COMPACT MOBILE */}
-      {/* Changed h-screen to min-h-[60vh] md:min-h-screen to reduce whitespace on mobile */}
       <section className="relative min-h-[60vh] md:h-screen flex items-center justify-center overflow-hidden bg-void-black scanline px-4 py-12 md:py-0">
         
         {/* Background Elements */}
@@ -183,7 +152,7 @@ const Home = () => {
         
         <div className="relative z-10 text-center flex flex-col items-center max-w-full">
              
-             {/* 1. Volatile Version Status */}
+             {/* 1. Volatile Version Status - NOW REUSED */}
              <VolatileStatus />
              
              {/* Main Title */}
@@ -210,10 +179,10 @@ const Home = () => {
         </div>
       </section>
 
-      {/* TICKER STRIP */}
+      {/* TICKER STRIP - INCREASED VELOCITY (4) */}
       <div className="bg-signal-red text-black py-3 overflow-hidden font-black tracking-tighter border-y border-black">
         <ScrollVelocity 
-            velocity={2} 
+            velocity={4} 
             texts={['LIMITED RELEASE // SIGNAL LOST // SYSTEM ERROR // VOID WALKING // NOISE PATTERNS']}
         />
       </div>
@@ -250,7 +219,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* FOOTER: TRANSMISSION CAPTURE */}
+      {/* FOOTER: TRANSMISSION CAPTURE & VOLATILE STATUS */}
       <section id="footer" className="relative py-20 px-6 bg-off-black border-t border-white/10 overflow-hidden">
          <div className="absolute inset-0 opacity-20 pointer-events-none">
             <DotGrid gap={24} size={2} dotColor="#ffffff" />
@@ -284,8 +253,12 @@ const Home = () => {
                 </Link>
             </div>
             
-            <div className="text-[9px] text-white/10 font-mono mt-12">
-                ENTROPY THREADS Ã‚Â© 2024 // ALL RIGHTS RESERVED
+            <div className="text-[9px] text-white/10 font-mono mt-12 flex flex-col items-center gap-2">
+                <span>ENTROPY THREADS © 2024 // ALL RIGHTS RESERVED</span>
+                {/* FOOTER VOLATILE STATUS */}
+                <div className="scale-75 origin-center">
+                    <VolatileStatus />
+                </div>
             </div>
          </div>
       </section>
