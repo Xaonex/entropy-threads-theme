@@ -7,6 +7,8 @@ import Product from './pages/Product';
 import Manifesto from './pages/Manifesto';
 import { CartProvider } from './context/CartContext';
 import { CartDrawer } from './components/cart/CartDrawer';
+import { SpeedInsights } from "@vercel/speed-insights/react"
+import { Analytics } from "@vercel/analytics/react"
 
 function App() {
   return (
@@ -30,6 +32,8 @@ function App() {
           </main>
 
           <Footer />
+          <SpeedInsights />
+          <Analytics />
         </div>
       </CartProvider>
     </Router>
