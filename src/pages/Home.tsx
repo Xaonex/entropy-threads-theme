@@ -285,7 +285,7 @@ const Home = () => {
             </div>
             
             <div className="text-[9px] text-white/10 font-mono mt-12">
-                ENTROPY THREADS Â© 2024 // ALL RIGHTS RESERVED
+                ENTROPY THREADS Ã‚Â© 2024 // ALL RIGHTS RESERVED
             </div>
          </div>
       </section>
