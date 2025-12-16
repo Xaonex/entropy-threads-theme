@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, useInView } from 'framer-motion';
 import DecryptedText from '../components/react-bits/DecryptedText';
 import ScrollVelocity from '../components/react-bits/ScrollVelocity';
 import TypewriterText from '../components/react-bits/TypewriterText';
@@ -23,6 +23,7 @@ function useIsMobile() {
     return isMobile;
 }
 
+// --- TYPES ---
 interface HomeProduct {
   id: string;
   handle: string;
@@ -31,32 +32,95 @@ interface HomeProduct {
   image: string;
 }
 
-const HERO_PHRASES = [
-  "SYSTEM_ONLINE // V.2.0.4",
-  "// SIGNAL LOST //",
-  "// NOISE PATTERNS //",
-  "// VOID WALKING //",
-  "// SYSTEM ERROR //",
-  "// LIMITED RELEASE //"
-];
+// --- COMPONENTS ---
 
-const HeroTextCycler = () => {
-    const [index, setIndex] = useState(0);
+// 1. VOLATILE SYSTEM STATUS
+const VolatileStatus = () => {
+    const [version, setVersion] = useState("2.0.4");
+    const [glitchColor, setGlitchColor] = useState(false);
 
     useEffect(() => {
         const interval = setInterval(() => {
-            setIndex((prev) => (prev + 1) % HERO_PHRASES.length);
-        }, 3000);
+            // 20% chance to glitch the version
+            if (Math.random() > 0.8) {
+                const patch = Math.floor(Math.random() * 9);
+                const minor = Math.random() > 0.9 ? Math.floor(Math.random() * 5) : 0;
+                setVersion(`2.${minor}.${patch}`);
+                setGlitchColor(true);
+                setTimeout(() => setGlitchColor(false), 200);
+            }
+        }, 1500);
         return () => clearInterval(interval);
     }, []);
 
     return (
-        <div key={index} className="text-xl md:text-2xl font-mono text-signal-red tracking-widest mb-6 h-8 max-w-full overflow-hidden whitespace-nowrap">
-            <DecryptedText text={HERO_PHRASES[index]} speed={50} characters="X010101" />
+        <div className={`text-xl md:text-2xl font-mono tracking-widest mb-6 h-8 transition-colors duration-100 ${glitchColor ? 'text-white' : 'text-signal-red'}`}>
+            SYSTEM_ONLINE // V.{version}
         </div>
     );
 };
 
+// 2. PRODUCT CARD (With strict Mobile Scanner Logic)
+const ProductCard = ({ p, isMobile, index }: { p: HomeProduct; isMobile: boolean; index: number }) => {
+    const ref = useRef(null);
+    // STAGE 1: Strict "Sweet Spot" 
+    // Margin "-40% 0px -40% 0px" means the item is only "in view" when it's in the middle 20% of the screen vertical height.
+    const isInView = useInView(ref, { margin: "-40% 0px -40% 0px" });
+
+    // Logic: Mobile + SweetSpot = Color. Mobile + Outside = Grayscale.
+    // Desktop: Always Grayscale unless Hovered.
+    const imageClass = isMobile
+        ? (isInView ? "grayscale-0 opacity-100" : "grayscale opacity-80")
+        : "grayscale group-hover:grayscale-0 opacity-60 group-hover:opacity-100";
+
+    const overlayClass = isMobile
+        ? "bg-gradient-to-t from-black via-black/50 to-transparent opacity-60"
+        : "bg-gradient-to-t from-black via-black/80 to-transparent opacity-90 group-hover:opacity-60 transition-opacity duration-500 absolute inset-0";
+
+    return (
+        <GlowCard glowColor="#00ff00" intensity="medium">
+            <Link to={`/product/${p.handle}`} className="block w-full h-full cursor-pointer relative overflow-hidden group">
+                
+                {/* BACKGROUND IMAGE CONTAINER */}
+                {p.image && (
+                    <motion.div 
+                        ref={ref}
+                        className="absolute inset-0 z-0"
+                        // No strict animation needed here, class switching handles the transition elegantly
+                    >
+                        <img 
+                            src={p.image} 
+                            alt={p.title} 
+                            className={`w-full h-full object-cover transition-all duration-700 ease-in-out ${imageClass}`}
+                        />
+                        <div className={overlayClass} />
+                    </motion.div>
+                )}
+                
+                {/* CONTENT CONTAINER - Fixed Aspect Ratio */}
+                <div className="h-96 md:aspect-[4/5] flex flex-col justify-between p-6 relative z-10 w-full">
+                    <div className="absolute top-4 right-4 text-xs font-mono text-white/50 border border-white/20 px-2 rounded backdrop-blur-sm">
+                        {String(index + 1).padStart(2, '0')}
+                    </div>
+                    <div className="flex-1 flex items-center justify-center">
+                        {!p.image && (
+                            <span className="text-6xl font-black text-white/5 group-hover:text-white/20 transition-colors">
+                                {p.title.split(" ")[0]}
+                            </span>
+                        )}
+                    </div>
+                    <div className="w-full">
+                        <h3 className="text-xl font-bold text-white mb-2 mix-blend-difference break-words">{p.title}</h3>
+                        <p className="font-mono text-sm text-gray-400 truncate mix-blend-difference max-w-full">{p.description}</p>
+                    </div>
+                </div>
+            </Link>
+        </GlowCard>
+    );
+};
+
+
+// --- MAIN PAGE ---
 const Home = () => {
   const [featured, setFeatured] = useState<HomeProduct[]>([]);
   const [loading, setLoading] = useState(true);
@@ -75,7 +139,6 @@ const Home = () => {
                 setDebugError("ENV_VARS_MISSING // CHECK_VERCEL_SETTINGS");
                 return;
             }
-
             if (data.errors) {
                  setDebugError(`API_ERROR: ${data.errors[0].message}`);
                  return;
@@ -103,8 +166,10 @@ const Home = () => {
 
   return (
     <div className="w-full max-w-[100vw] overflow-x-hidden">
-      {/* HERO SECTION */}
-      <section className="relative h-screen flex items-center justify-center overflow-hidden bg-void-black scanline px-4">
+      
+      {/* HERO SECTION - COMPACT MOBILE */}
+      {/* Changed h-screen to min-h-[60vh] md:min-h-screen to reduce whitespace on mobile */}
+      <section className="relative min-h-[60vh] md:h-screen flex items-center justify-center overflow-hidden bg-void-black scanline px-4 py-12 md:py-0">
         
         {/* Background Elements */}
         <div className="absolute inset-0 z-0">
@@ -118,8 +183,8 @@ const Home = () => {
         
         <div className="relative z-10 text-center flex flex-col items-center max-w-full">
              
-             {/* 1. Dynamic Text Overlay */}
-             <HeroTextCycler />
+             {/* 1. Volatile Version Status */}
+             <VolatileStatus />
              
              {/* Main Title */}
              <h1 className="text-5xl md:text-8xl font-black tracking-tighter leading-none mix-blend-difference mb-4 break-words max-w-full">
@@ -153,7 +218,7 @@ const Home = () => {
         />
       </div>
 
-      {/* FEATURED COLLECTION - WITH MOBILE SCANNER */}
+      {/* FEATURED COLLECTION */}
       <section className="py-20 md:py-32 px-4 md:px-6 bg-void-black min-h-[80vh]">
         <div className="container mx-auto">
              <h2 className="text-2xl md:text-4xl font-black mb-12 md:mb-16 flex items-center gap-4">
@@ -174,58 +239,7 @@ const Home = () => {
                             </p>
                         </div>
                     ) : featured.length > 0 ? featured.map((p, i) => (
-                        <GlowCard key={p.id} glowColor="#00ff00" intensity="medium">
-                            <Link to={`/product/${p.handle}`} className="block w-full h-full cursor-pointer relative overflow-hidden group">
-                                
-                                {/* 
-                                    IMAGE BACKGROUND - "THE SCANNER"
-                                    Mobile: Uses Framer Motion to reveal color when in center view.
-                                    Desktop: Uses group-hover (CSS) to reveal color.
-                                */}
-                                {p.image && (
-                                    <motion.div 
-                                        className="absolute inset-0 z-0"
-                                        initial={isMobile ? { filter: 'grayscale(100%)' } : {}}
-                                        whileInView={isMobile ? { filter: 'grayscale(0%)' } : {}}
-                                        viewport={{ margin: "-20%" }}
-                                        transition={{ duration: 0.5 }}
-                                    >
-                                        <img 
-                                            src={p.image} 
-                                            alt={p.title} 
-                                            className={`w-full h-full object-cover transition-all duration-500 
-                                                ${!isMobile ? 'grayscale group-hover:grayscale-0 opacity-60 group-hover:opacity-100' : 'opacity-80'}
-                                            `}
-                                        />
-                                        {!isMobile && (
-                                            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent opacity-90 group-hover:opacity-60 transition-opacity duration-500" />
-                                        )}
-                                        {isMobile && (
-                                            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-60" />
-                                        )}
-                                    </motion.div>
-                                )}
-                                
-                                {/* CONTENT CONTAINER - Force Aspect Ratio/Height */}
-                                <div className="h-96 md:aspect-[4/5] flex flex-col justify-between p-6 relative z-10 w-full">
-                                    <div className="absolute top-4 right-4 text-xs font-mono text-white/50 border border-white/20 px-2 rounded backdrop-blur-sm">
-                                        {String(i + 1).padStart(2, '0')}
-                                    </div>
-                                    <div className="flex-1 flex items-center justify-center">
-                                        {/* Fallback Text if Image Missing */}
-                                        {!p.image && (
-                                            <span className="text-6xl font-black text-white/5 group-hover:text-white/20 transition-colors">
-                                                {p.title.split(" ")[0]}
-                                            </span>
-                                        )}
-                                    </div>
-                                    <div className="w-full">
-                                        <h3 className="text-xl font-bold text-white mb-2 mix-blend-difference break-words">{p.title}</h3>
-                                        <p className="font-mono text-sm text-gray-400 truncate mix-blend-difference max-w-full">{p.description}</p>
-                                    </div>
-                                </div>
-                            </Link>
-                        </GlowCard>
+                        <ProductCard key={p.id} p={p} index={i} isMobile={isMobile} />
                     )) : (
                         <div className="col-span-full text-static-gray font-mono text-center py-12 border border-white/10">
                             NO_ARTIFACTS_FOUND // CHECK_SHOPIFY_INVENTORY
@@ -238,7 +252,6 @@ const Home = () => {
 
       {/* FOOTER: TRANSMISSION CAPTURE */}
       <section id="footer" className="relative py-20 px-6 bg-off-black border-t border-white/10 overflow-hidden">
-         {/* DotGrid Texture */}
          <div className="absolute inset-0 opacity-20 pointer-events-none">
             <DotGrid gap={24} size={2} dotColor="#ffffff" />
          </div>
