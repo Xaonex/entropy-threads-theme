@@ -1,13 +1,27 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import DecryptedText from '../components/react-bits/DecryptedText';
 import ScrollVelocity from '../components/react-bits/ScrollVelocity';
-import TextPressure from '../components/react-bits/TextPressure';
 import TypewriterText from '../components/react-bits/TypewriterText';
+import GlitchText from '../components/react-bits/GlitchText';
+import DotGrid from '../components/react-bits/DotGrid';
 import { GlowCard } from '../components/react-bits/GlowCard';
 import { ChromaGrid } from '../components/react-bits/ChromaGrid';
 import { Magnet } from '../components/react-bits/Magnet';
 import { shopifyFetch, PRODUCTS_QUERY } from '../lib/shopify';
+
+// --- HOOKS ---
+function useIsMobile() {
+    const [isMobile, setIsMobile] = useState(false);
+    useEffect(() => {
+        const check = () => setIsMobile(window.innerWidth < 768);
+        check();
+        window.addEventListener('resize', check);
+        return () => window.removeEventListener('resize', check);
+    }, []);
+    return isMobile;
+}
 
 interface HomeProduct {
   id: string;
@@ -47,6 +61,7 @@ const Home = () => {
   const [featured, setFeatured] = useState<HomeProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [debugError, setDebugError] = useState<string | null>(null);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     async function loadFeatured() {
@@ -138,8 +153,8 @@ const Home = () => {
         />
       </div>
 
-      {/* FEATURED COLLECTION */}
-      <section className="py-32 px-6 bg-void-black">
+      {/* FEATURED COLLECTION - WITH MOBILE SCANNER */}
+      <section className="py-32 px-6 bg-void-black min-h-[80vh]">
         <div className="container mx-auto">
              <h2 className="text-3xl md:text-4xl font-black mb-16 flex items-center gap-4">
                 <span className="w-4 h-4 bg-cyan-glitch animate-pulse"></span>
@@ -149,7 +164,7 @@ const Home = () => {
              {loading ? (
                 <div className="font-mono text-static-gray animate-pulse">LOADING_DATA_STREAM...</div>
              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-16 md:gap-8">
                     {debugError ? (
                         <div className="col-span-full border border-signal-red p-4 text-signal-red font-mono text-center">
                             <p className="font-bold">SYSTEM_ALERT // CONNECTION_FAILURE</p>
@@ -161,16 +176,34 @@ const Home = () => {
                     ) : featured.length > 0 ? featured.map((p, i) => (
                         <GlowCard key={p.id} glowColor="#00ff00" intensity="medium">
                             <Link to={`/product/${p.handle}`} className="block h-full cursor-pointer relative overflow-hidden group">
-                                {/* IMAGE BACKGROUND */}
+                                
+                                {/* 
+                                    IMAGE BACKGROUND - "THE SCANNER"
+                                    Mobile: Uses Framer Motion to reveal color when in center view.
+                                    Desktop: Uses group-hover (CSS) to reveal color.
+                                */}
                                 {p.image && (
-                                    <div className="absolute inset-0 z-0">
+                                    <motion.div 
+                                        className="absolute inset-0 z-0"
+                                        initial={isMobile ? { filter: 'grayscale(100%)' } : {}}
+                                        whileInView={isMobile ? { filter: 'grayscale(0%)' } : {}}
+                                        viewport={{ margin: "-20%" }}
+                                        transition={{ duration: 0.5 }}
+                                    >
                                         <img 
                                             src={p.image} 
                                             alt={p.title} 
-                                            className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-500 grayscale group-hover:grayscale-0"
+                                            className={`w-full h-full object-cover transition-all duration-500 
+                                                ${!isMobile ? 'grayscale group-hover:grayscale-0 opacity-60 group-hover:opacity-100' : 'opacity-80'}
+                                            `}
                                         />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent opacity-90 group-hover:opacity-60 transition-opacity duration-500" />
-                                    </div>
+                                        {!isMobile && (
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent opacity-90 group-hover:opacity-60 transition-opacity duration-500" />
+                                        )}
+                                        {isMobile && (
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-60" />
+                                        )}
+                                    </motion.div>
                                 )}
                                 
                                 <div className="h-96 flex flex-col justify-between p-6 relative z-10">
@@ -178,7 +211,7 @@ const Home = () => {
                                         {String(i + 1).padStart(2, '0')}
                                     </div>
                                     <div className="flex-1 flex items-center justify-center">
-                                         {/* If no image, show the placeholder text */}
+                                        {/* Fallback Text if Image Missing */}
                                         {!p.image && (
                                             <span className="text-6xl font-black text-white/5 group-hover:text-white/20 transition-colors">
                                                 {p.title.split(" ")[0]}
@@ -202,20 +235,44 @@ const Home = () => {
         </div>
       </section>
 
-      {/* MANIFESTO / TEXT PRESSURE */}
-      <section id="manifesto" className="py-32 px-6 flex items-center justify-center min-h-[50vh] bg-grid-white/[0.02]">
-         <div className="relative w-full max-w-4xl h-64 md:h-96">
-            <TextPressure 
-                text="NOISE_IN_THE_SIGNAL" 
-                flex={true} 
-                alpha={false}
-                stroke={false}
-                width={true}
-                weight={true}
-                italic={false}
-                textColor="#ffffff"
-                minFontSize={36}
-            />
+      {/* FOOTER: TRANSMISSION CAPTURE */}
+      <section id="footer" className="relative py-20 px-6 bg-off-black border-t border-white/10 overflow-hidden">
+         {/* DotGrid Texture */}
+         <div className="absolute inset-0 opacity-20 pointer-events-none">
+            <DotGrid gap={24} size={2} dotColor="#ffffff" />
+         </div>
+
+         <div className="container mx-auto relative z-10 flex flex-col items-center justify-center text-center space-y-8">
+            <div className="space-y-2">
+                <h2 className="text-4xl md:text-5xl font-black tracking-tighter">
+                    <GlitchText text="NOISE_IN_THE_SIGNAL" speed={0.5} enableShadows={true} />
+                </h2>
+                <p className="font-mono text-xs md:text-sm text-static-gray tracking-widest">
+                    > Join the frequency. Early access to drops.
+                </p>
+            </div>
+
+            <form className="w-full max-w-md flex flex-col gap-4" onSubmit={(e) => { e.preventDefault(); alert("TRANSMISSION_RECEIVED // WELCOME_TO_THE_VOID"); }}>
+                <input 
+                    type="email" 
+                    placeholder="ENTER_EMAIL_ADDRESS" 
+                    className="w-full bg-transparent border-b border-white/30 py-3 text-white font-mono placeholder:text-white/20 focus:border-white focus:outline-none transition-colors text-center md:text-left"
+                    required
+                />
+                <button type="submit" className="w-full bg-white text-black font-black py-4 hover:bg-signal-red selection:bg-black transition-colors tracking-widest">
+                    TRANSMIT
+                </button>
+            </form>
+
+            <div className="pt-8">
+                <Link to="/manifesto" className="text-[10px] font-mono text-static-gray hover:text-white border-b border-transparent hover:border-white transition-all pb-1">
+                    [ READ MANIFESTO ]
+                </Link>
+            </div>
+            
+            <div className="text-[9px] text-white/10 font-mono mt-12">
+                ENTROPY THREADS © 2024 // ALL RIGHTS RESERVED
+            </div>
          </div>
       </section>
     </div>
