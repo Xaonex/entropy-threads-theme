@@ -13,6 +13,10 @@ function App() {
     <Router>
       <CartProvider>
         <div className="relative w-full min-h-screen bg-void-black text-white font-sans selection:bg-signal-red selection:text-white">
+          
+          {/* GLOBAL FILM GRAIN OVERLAY */}
+          <div className="fixed inset-0 z-[100] pointer-events-none opacity-[0.04] noise-overlay mix-blend-overlay"></div>
+          
           <Navbar />
           <CartDrawer />
           
