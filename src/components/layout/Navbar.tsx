@@ -44,7 +44,7 @@ export const Navbar = () => {
         </button>
         
         {/* MOBILE MENU TRIGGER */}
-        <button onClick={toggleMobileMenu} className="md:hidden text-white hover:text-signal-red">
+        <button onClick={toggleMobileMenu} className="md:hidden text-white hover:text-signal-red z-[70] relative">
             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
@@ -53,23 +53,21 @@ export const Navbar = () => {
       <AnimatePresence>
         {isMobileMenuOpen && (
             <motion.div 
-                initial={{ x: "100%" }}
-                animate={{ x: 0 }}
-                exit={{ x: "100%" }}
-                transition={{ type: "tween", duration: 0.3 }}
-                className="fixed inset-0 z-40 bg-void-black flex flex-col items-center justify-center space-y-8 md:hidden"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="fixed inset-0 z-[60] bg-black flex flex-col items-center justify-center space-y-8 md:hidden h-screen w-screen"
             >
-                {/* Close Button Absolute */}
-                <button onClick={toggleMobileMenu} className="absolute top-6 right-6 text-white hover:text-signal-red">
-                    <X size={32} />
-                </button>
-
+                {/* Close Button is now handled by the trigger button z-index or a new absolute button if needed */}
+                {/* We keep a large invisible Overlay click handler if needed, or strictly buttons */}
+                
                 {navLinks.map((link, i) => (
                     <motion.div
                         key={link.name}
-                        initial={{ opacity: 0, y: 20 }}
+                        initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.1 * i }}
+                        transition={{ delay: 0.1 + (0.1 * i) }}
                     >
                         <Link 
                             to={link.path} 
@@ -81,9 +79,9 @@ export const Navbar = () => {
                     </motion.div>
                 ))}
                  <motion.div
-                        initial={{ opacity: 0, y: 20 }}
+                        initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.3 }}
+                        transition={{ delay: 0.4 }}
                 >
                     <Link to="/account" onClick={toggleMobileMenu} className="text-2xl font-mono text-gray-500 hover:text-white mt-8 block">
                         ACCOUNT
