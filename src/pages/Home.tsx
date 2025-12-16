@@ -248,7 +248,7 @@ const Home = () => {
                     <GlitchText text="NOISE_IN_THE_SIGNAL" speed={0.5} enableShadows={true} />
                 </h2>
                 <p className="font-mono text-xs md:text-sm text-static-gray tracking-widest">
-                    > Join the frequency. Early access to drops.
+                    &gt; Join the frequency. Early access to drops.
                 </p>
             </div>
 
