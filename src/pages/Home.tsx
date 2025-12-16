@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useInView } from 'framer-motion';
-import DecryptedText from '../components/react-bits/DecryptedText';
+
 import ScrollVelocity from '../components/react-bits/ScrollVelocity';
 import TypewriterText from '../components/react-bits/TypewriterText';
 import GlitchText from '../components/react-bits/GlitchText';
@@ -285,7 +285,7 @@ const Home = () => {
             </div>
             
             <div className="text-[9px] text-white/10 font-mono mt-12">
-                ENTROPY THREADS © 2024 // ALL RIGHTS RESERVED
+                ENTROPY THREADS Â© 2024 // ALL RIGHTS RESERVED
             </div>
          </div>
       </section>
