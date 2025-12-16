@@ -37,7 +37,7 @@ export const CartDrawer = () => {
         }
     } catch (e) {
         console.error("Checkout Exception", e);
-        alert("CONNECTION_LOST // UNABLE_TO_TRANSMIT");
+        alert(`CONNECTION_LOST // ${e.message || "UNKNOWN_ERROR"}`);
     } finally {
         setIsCheckingOut(false);
     }
