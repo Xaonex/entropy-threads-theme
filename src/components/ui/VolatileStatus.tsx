@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
+import { twMerge } from 'tailwind-merge';
 
-const VolatileStatus = () => {
+const VolatileStatus = ({ className = "" }: { className?: string }) => {
     const [version, setVersion] = useState("2.0.4");
     const [glitchColor, setGlitchColor] = useState(false);
 
@@ -19,7 +20,11 @@ const VolatileStatus = () => {
     }, []);
 
     return (
-        <div className={`text-xl md:text-2xl font-mono tracking-widest mb-6 h-8 transition-colors duration-100 ${glitchColor ? 'text-white' : 'text-signal-red'}`}>
+        <div className={twMerge(
+            "text-xl md:text-2xl font-mono tracking-widest mb-6 h-8 transition-colors duration-100", 
+            glitchColor ? 'text-white' : 'text-signal-red',
+            className
+        )}>
             SYSTEM_ONLINE // V.{version}
         </div>
     );

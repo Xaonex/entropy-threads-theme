@@ -1,3 +1,5 @@
+import VolatileStatus from '../ui/VolatileStatus';
+
 export const Footer = () => {
   return (
     <footer className="w-full bg-off-black border-t border-white/10 pt-16 pb-8">
@@ -6,8 +8,7 @@ export const Footer = () => {
         <div className="flex flex-col space-y-4">
           <h3 className="text-lg font-bold text-white">ENTROPY THREADS</h3>
           <div className="font-mono text-xs text-signal-red">
-            SYS.STATUS: ONLINE<br/>
-            V.1.0.0
+             <VolatileStatus className="text-xs md:text-xs mb-0 h-auto tracking-normal" />
           </div>
         </div>
 
@@ -15,9 +16,9 @@ export const Footer = () => {
         <div className="flex flex-col space-y-4">
           <h4 className="text-sm font-bold text-gray-500 uppercase tracking-widest">Shop</h4>
           <ul className="space-y-2 text-sm text-gray-400">
-            <li><a href="#" className="hover:text-white transition-colors">Tees</a></li>
-            <li><a href="#" className="hover:text-white transition-colors">Hoodies</a></li>
-            <li><a href="#" className="hover:text-white transition-colors">Accessories</a></li>
+            <li><a href="/shop" className="hover:text-white transition-colors">Tees</a></li>
+            <li><a href="/shop" className="hover:text-white transition-colors">Hoodies</a></li>
+            <li><a href="/shop" className="hover:text-white transition-colors">Accessories</a></li>
           </ul>
         </div>
 
