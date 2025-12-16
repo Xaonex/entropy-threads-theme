@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import DecryptedText from '../components/react-bits/DecryptedText';
 import ScrollVelocity from '../components/react-bits/ScrollVelocity';
 import TextPressure from '../components/react-bits/TextPressure';
+import TypewriterText from '../components/react-bits/TypewriterText';
 import { GlowCard } from '../components/react-bits/GlowCard';
 import { ChromaGrid } from '../components/react-bits/ChromaGrid';
 import { Magnet } from '../components/react-bits/Magnet';
@@ -15,6 +16,32 @@ interface HomeProduct {
   description: string;
   image: string;
 }
+
+const HERO_PHRASES = [
+  "SYSTEM_ONLINE // V.2.0.4",
+  "// SIGNAL LOST //",
+  "// NOISE PATTERNS //",
+  "// VOID WALKING //",
+  "// SYSTEM ERROR //",
+  "// LIMITED RELEASE //"
+];
+
+const HeroTextCycler = () => {
+    const [index, setIndex] = useState(0);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setIndex((prev) => (prev + 1) % HERO_PHRASES.length);
+        }, 3000);
+        return () => clearInterval(interval);
+    }, []);
+
+    return (
+        <div key={index} className="text-xl md:text-2xl font-mono text-signal-red tracking-widest mb-6 h-8">
+            <DecryptedText text={HERO_PHRASES[index]} speed={50} characters="X010101" />
+        </div>
+    );
+};
 
 const Home = () => {
   const [featured, setFeatured] = useState<HomeProduct[]>([]);
@@ -45,7 +72,6 @@ const Home = () => {
                     handle: e.node.handle,
                     title: e.node.title,
                     description: e.node.description || "ARTIFACT_DESCRIPTION_MISSING",
-                    // Fix: Map the image safely
                     image: e.node.images.edges[0]?.node.url || "" 
                 }));
                 setFeatured(mapped);
@@ -63,48 +89,59 @@ const Home = () => {
   return (
     <div className="w-full">
       {/* HERO SECTION */}
-      <section className="relative h-screen flex items-center justify-center overflow-hidden">
+      <section className="relative h-screen flex items-center justify-center overflow-hidden bg-void-black scanline">
+        
+        {/* Background Elements */}
         <div className="absolute inset-0 z-0">
              <ChromaGrid 
-                gridSize={30} 
+                gridSize={40} 
                 aberrationAmount={5} 
-                colors={['#333333', '#444444', '#222222']} 
+                colors={['#1a1a1a', '#2a2a2a', '#0a0a0a']} 
              />
+             <div className="noise-overlay" />
         </div>
         
-        <div className="relative z-10 text-center space-y-4">
-             <div className="text-xl md:text-2xl font-mono text-signal-red tracking-widest mb-4">
-                <DecryptedText text="SYSTEM_ONLINE // V.2.0.4" speed={30} characters="X010101" />
-             </div>
+        <div className="relative z-10 text-center flex flex-col items-center">
              
-             <h1 className="text-6xl md:text-7xl font-black tracking-tighter leading-none mix-blend-difference">
-                <span className="text-white">ENTROPY THREADS</span>
+             {/* 1. Dynamic Text Overlay */}
+             <HeroTextCycler />
+             
+             {/* Main Title */}
+             <h1 className="text-6xl md:text-8xl font-black tracking-tighter leading-none mix-blend-difference mb-4">
+                <span className="text-white block">ENTROPY</span>
+                <span className="text-white block">THREADS</span>
              </h1>
              
-             <div className="pt-8">
-                <Magnet strength={0.2} range={100}>
-                    <Link to="/shop">
-                        <button className="px-8 py-3 border border-white/20 bg-void-black/50 backdrop-blur-sm text-white font-mono hover:bg-white hover:text-black transition-all duration-300">
-                            ENTER_ARCHIVE
-                        </button>
-                    </Link>
-                </Magnet>
+             {/* 2. Tagline */}
+             <div className="text-lg md:text-xl font-mono text-white/80 h-8 mb-12">
+                 <TypewriterText text="WEAR THE NOISE." speed={100} cursor={true} />
              </div>
+             
+             {/* 3. Enhanced Button */}
+             <Magnet strength={0.2} range={100}>
+                <Link to="/shop">
+                    <button className="group relative px-10 py-4 overflow-hidden border border-white bg-transparent font-mono text-white transition-all duration-300 hover:bg-white hover:text-black">
+                        <span className="relative z-10 font-bold tracking-widest">ENTER_ARCHIVE</span>
+                        <div className="absolute inset-0 -translate-x-full bg-white transition-transform duration-300 group-hover:translate-x-0" />
+                    </button>
+                </Link>
+             </Magnet>
+
         </div>
       </section>
 
       {/* TICKER STRIP */}
-      <div className="bg-signal-red text-black py-3 overflow-hidden font-black tracking-tighter">
+      <div className="bg-signal-red text-black py-3 overflow-hidden font-black tracking-tighter border-y border-black">
         <ScrollVelocity 
-            velocity={3} 
+            velocity={2} 
             texts={['LIMITED RELEASE // SIGNAL LOST // SYSTEM ERROR // VOID WALKING // NOISE PATTERNS']}
         />
       </div>
 
       {/* FEATURED COLLECTION */}
-      <section className="py-24 px-6 bg-void-black">
+      <section className="py-32 px-6 bg-void-black">
         <div className="container mx-auto">
-             <h2 className="text-3xl md:text-4xl font-black mb-12 flex items-center gap-4">
+             <h2 className="text-3xl md:text-4xl font-black mb-16 flex items-center gap-4">
                 <span className="w-4 h-4 bg-cyan-glitch animate-pulse"></span>
                 CURRENT_ARTIFACTS
              </h2>
@@ -132,7 +169,7 @@ const Home = () => {
                                             alt={p.title} 
                                             className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-500 grayscale group-hover:grayscale-0"
                                         />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-90 group-hover:opacity-60 transition-opacity duration-500" />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent opacity-90 group-hover:opacity-60 transition-opacity duration-500" />
                                     </div>
                                 )}
                                 
