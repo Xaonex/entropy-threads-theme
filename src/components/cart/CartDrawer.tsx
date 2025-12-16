@@ -35,7 +35,7 @@ export const CartDrawer = () => {
              console.error("Checkout Errors:", data?.checkoutCreate?.checkoutUserErrors);
              alert("SYSTEM_ERROR // CHECKOUT_INITIATION_FAILED");
         }
-    } catch (e) {
+    } catch (e: any) {
         console.error("Checkout Exception", e);
         alert(`CONNECTION_LOST // ${e.message || "UNKNOWN_ERROR"}`);
     } finally {
