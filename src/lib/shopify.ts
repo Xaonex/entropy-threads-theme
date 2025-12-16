@@ -85,14 +85,13 @@ export const PRODUCT_BY_HANDLE_QUERY = `
   }
 `;
 
-export const CHECKOUT_CREATE_MUTATION = `
-  mutation checkoutCreate($input: CheckoutCreateInput!) {
-    checkoutCreate(input: $input) {
-      checkout {
-        webUrl
+export const CART_CREATE_MUTATION = `
+  mutation cartCreate($input: CartInput!) {
+    cartCreate(input: $input) {
+      cart {
+        checkoutUrl
       }
-      checkoutUserErrors {
-        code
+      userErrors {
         field
         message
       }

@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useCart } from '../../context/CartContext';
 import { X, Plus, Minus } from 'lucide-react';
 import { Magnet } from '../react-bits/Magnet';
-import { shopifyFetch, CHECKOUT_CREATE_MUTATION } from '../../lib/shopify';
+import { shopifyFetch, CART_CREATE_MUTATION } from '../../lib/shopify';
 
 const FREE_SHIPPING_THRESHOLD = 150;
 
@@ -20,24 +20,29 @@ export const CartDrawer = () => {
     setIsCheckingOut(true);
     try {
         const lineItems = cartItems.map(item => ({
-            variantId: item.variantId,
+            merchandiseId: item.variantId,
             quantity: item.quantity
         }));
 
         const data: any = await shopifyFetch({
-            query: CHECKOUT_CREATE_MUTATION,
-            variables: { input: { lineItems } }
+            query: CART_CREATE_MUTATION,
+            variables: { input: { lines: lineItems } }
         });
 
-        if (data && data.checkoutCreate && data.checkoutCreate.checkout) {
-            window.location.href = data.checkoutCreate.checkout.webUrl;
+        if (data && data.cartCreate && data.cartCreate.cart) {
+            window.location.href = data.cartCreate.cart.checkoutUrl;
         } else {
-             console.error("Checkout Errors:", data?.checkoutCreate?.checkoutUserErrors);
-             alert("SYSTEM_ERROR // CHECKOUT_INITIATION_FAILED");
+             console.error("Cart Errors:", data?.cartCreate?.userErrors);
+             const errorMsg = data?.cartCreate?.userErrors?.[0]?.message || "CHECKOUT_INITIATION_FAILED";
+             alert(`SYSTEM_ERROR // ${errorMsg}`);
         }
     } catch (e: any) {
         console.error("Checkout Exception", e);
-        alert(`CONNECTION_LOST // ${e.message || "UNKNOWN_ERROR"}`);
+        if (e.message.includes("SHOPIFY API KEYS MISSING")) {
+             alert("CONFIG_ERROR // MISSING_API_KEYS");
+        } else {
+             alert(`CONNECTION_LOST // ${e.message || "UNABLE_TO_TRANSMIT"}`);
+        }
     } finally {
         setIsCheckingOut(false);
     }
