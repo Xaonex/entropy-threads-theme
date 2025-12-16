@@ -51,7 +51,7 @@ const HeroTextCycler = () => {
     }, []);
 
     return (
-        <div key={index} className="text-xl md:text-2xl font-mono text-signal-red tracking-widest mb-6 h-8">
+        <div key={index} className="text-xl md:text-2xl font-mono text-signal-red tracking-widest mb-6 h-8 max-w-full overflow-hidden whitespace-nowrap">
             <DecryptedText text={HERO_PHRASES[index]} speed={50} characters="X010101" />
         </div>
     );
@@ -102,9 +102,9 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="w-full">
+    <div className="w-full max-w-[100vw] overflow-x-hidden">
       {/* HERO SECTION */}
-      <section className="relative h-screen flex items-center justify-center overflow-hidden bg-void-black scanline">
+      <section className="relative h-screen flex items-center justify-center overflow-hidden bg-void-black scanline px-4">
         
         {/* Background Elements */}
         <div className="absolute inset-0 z-0">
@@ -116,13 +116,13 @@ const Home = () => {
              <div className="noise-overlay" />
         </div>
         
-        <div className="relative z-10 text-center flex flex-col items-center">
+        <div className="relative z-10 text-center flex flex-col items-center max-w-full">
              
              {/* 1. Dynamic Text Overlay */}
              <HeroTextCycler />
              
              {/* Main Title */}
-             <h1 className="text-6xl md:text-8xl font-black tracking-tighter leading-none mix-blend-difference mb-4">
+             <h1 className="text-5xl md:text-8xl font-black tracking-tighter leading-none mix-blend-difference mb-4 break-words max-w-full">
                 <span className="text-white block">ENTROPY</span>
                 <span className="text-white block">THREADS</span>
              </h1>
@@ -154,17 +154,17 @@ const Home = () => {
       </div>
 
       {/* FEATURED COLLECTION - WITH MOBILE SCANNER */}
-      <section className="py-32 px-6 bg-void-black min-h-[80vh]">
+      <section className="py-20 md:py-32 px-4 md:px-6 bg-void-black min-h-[80vh]">
         <div className="container mx-auto">
-             <h2 className="text-3xl md:text-4xl font-black mb-16 flex items-center gap-4">
-                <span className="w-4 h-4 bg-cyan-glitch animate-pulse"></span>
+             <h2 className="text-2xl md:text-4xl font-black mb-12 md:mb-16 flex items-center gap-4">
+                <span className="w-3 h-3 md:w-4 md:h-4 bg-cyan-glitch animate-pulse shrink-0"></span>
                 CURRENT_ARTIFACTS
              </h2>
 
              {loading ? (
                 <div className="font-mono text-static-gray animate-pulse">LOADING_DATA_STREAM...</div>
              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-16 md:gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-8">
                     {debugError ? (
                         <div className="col-span-full border border-signal-red p-4 text-signal-red font-mono text-center">
                             <p className="font-bold">SYSTEM_ALERT // CONNECTION_FAILURE</p>
@@ -175,7 +175,7 @@ const Home = () => {
                         </div>
                     ) : featured.length > 0 ? featured.map((p, i) => (
                         <GlowCard key={p.id} glowColor="#00ff00" intensity="medium">
-                            <Link to={`/product/${p.handle}`} className="block h-full cursor-pointer relative overflow-hidden group">
+                            <Link to={`/product/${p.handle}`} className="block w-full h-full cursor-pointer relative overflow-hidden group">
                                 
                                 {/* 
                                     IMAGE BACKGROUND - "THE SCANNER"
@@ -206,7 +206,8 @@ const Home = () => {
                                     </motion.div>
                                 )}
                                 
-                                <div className="h-96 flex flex-col justify-between p-6 relative z-10">
+                                {/* CONTENT CONTAINER - Force Aspect Ratio/Height */}
+                                <div className="h-96 md:aspect-[4/5] flex flex-col justify-between p-6 relative z-10 w-full">
                                     <div className="absolute top-4 right-4 text-xs font-mono text-white/50 border border-white/20 px-2 rounded backdrop-blur-sm">
                                         {String(i + 1).padStart(2, '0')}
                                     </div>
@@ -218,9 +219,9 @@ const Home = () => {
                                             </span>
                                         )}
                                     </div>
-                                    <div>
-                                        <h3 className="text-xl font-bold text-white mb-2 mix-blend-difference">{p.title}</h3>
-                                        <p className="font-mono text-sm text-gray-400 truncate mix-blend-difference">{p.description}</p>
+                                    <div className="w-full">
+                                        <h3 className="text-xl font-bold text-white mb-2 mix-blend-difference break-words">{p.title}</h3>
+                                        <p className="font-mono text-sm text-gray-400 truncate mix-blend-difference max-w-full">{p.description}</p>
                                     </div>
                                 </div>
                             </Link>
@@ -242,9 +243,9 @@ const Home = () => {
             <DotGrid gap={24} size={2} dotColor="#ffffff" />
          </div>
 
-         <div className="container mx-auto relative z-10 flex flex-col items-center justify-center text-center space-y-8">
-            <div className="space-y-2">
-                <h2 className="text-4xl md:text-5xl font-black tracking-tighter">
+         <div className="container mx-auto relative z-10 flex flex-col items-center justify-center text-center space-y-8 max-w-full">
+            <div className="space-y-2 max-w-full px-4">
+                <h2 className="text-3xl md:text-5xl font-black tracking-tighter break-words">
                     <GlitchText text="NOISE_IN_THE_SIGNAL" speed={0.5} enableShadows={true} />
                 </h2>
                 <p className="font-mono text-xs md:text-sm text-static-gray tracking-widest">
@@ -252,7 +253,7 @@ const Home = () => {
                 </p>
             </div>
 
-            <form className="w-full max-w-md flex flex-col gap-4" onSubmit={(e) => { e.preventDefault(); alert("TRANSMISSION_RECEIVED // WELCOME_TO_THE_VOID"); }}>
+            <form className="w-full max-w-md flex flex-col gap-4 px-4" onSubmit={(e) => { e.preventDefault(); alert("TRANSMISSION_RECEIVED // WELCOME_TO_THE_VOID"); }}>
                 <input 
                     type="email" 
                     placeholder="ENTER_EMAIL_ADDRESS" 
