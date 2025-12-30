@@ -4,10 +4,11 @@ import DecryptedText from '../components/react-bits/DecryptedText';
 import { Magnet } from '../components/react-bits/Magnet';
 import CountUp from '../components/react-bits/CountUp';
 import { useCart } from '../context/CartContext';
-import { shopifyFetch, PRODUCT_BY_HANDLE_QUERY } from '../lib/shopify';
+import { shopifyFetch, PRODUCT_BY_HANDLE_QUERY, PRODUCTS_QUERY } from '../lib/shopify';
 
 interface ProductData {
   id: string;
+  handle: string;
   name: string;
   price: number;
   description: string;
@@ -19,6 +20,7 @@ interface ProductData {
 const Product = () => {
   const { id } = useParams();
   const [product, setProduct] = useState<ProductData | null>(null);
+  const [relatedProducts, setRelatedProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
@@ -31,6 +33,7 @@ const Product = () => {
         if (!id) return;
 
         try {
+            // Load Main Product
             const data: any = await shopifyFetch({
                 query: PRODUCT_BY_HANDLE_QUERY,
                 variables: { handle: id }
@@ -38,8 +41,11 @@ const Product = () => {
             
             if (data && data.product) {
                 const p = data.product;
+                const currentId = p.id;
+                
                 setProduct({
                     id: p.id,
+                    handle: id, // store handle for exclusion if needed, though ID is better
                     name: p.title,
                     price: parseFloat(p.priceRange.minVariantPrice.amount),
                     description: p.description,
@@ -52,6 +58,28 @@ const Product = () => {
                         price: parseFloat(e.node.price.amount)
                     }))
                 });
+
+                // Load Related Products (Simple: Fetch 4, exclude current)
+                const relatedData: any = await shopifyFetch({
+                    query: PRODUCTS_QUERY,
+                    variables: { first: 4 }
+                });
+                if (relatedData && relatedData.products) {
+                     const others = relatedData.products.edges
+                        .map((e: any) => e.node)
+                        .filter((p: any) => p.id !== currentId) // Exclude current
+                        .slice(0, 3); // Take top 3
+                     
+                     setRelatedProducts(others.map((p: any) => ({
+                        id: p.id,
+                        handle: p.handle,
+                        title: p.title,
+                        price: parseFloat(p.priceRange.minVariantPrice.amount),
+                        image: p.images.edges[0]?.node.url || "",
+                        available: p.availableForSale
+                     })));
+                }
+
             } else {
                 setError("ARTIFACT_NOT_FOUND");
             }
@@ -111,10 +139,11 @@ const Product = () => {
         <p className="text-lg text-static-gray">${product.price.toFixed(2)}</p>
       </div>
 
-      <div className="container mx-auto px-0 md:px-6"> 
-        <div className="flex flex-col md:flex-row gap-12">
-            {/* LEFT: IMAGE GALLERY (Mobile Carousel / Desktop Grid) */}
-            <div className="w-full md:w-[60%] flex flex-col gap-4 px-0">
+      <div className="container mx-auto px-0 md:px-6 pb-24"> 
+        {/* MAIN PRODUCT LAYOUT */}
+        <div className="flex flex-col md:flex-row gap-12 md:gap-20 mb-24">
+            {/* LEFT: IMAGE GALLERY */}
+            <div className="w-full md:w-[60%] flex flex-col px-0">
                 {/* Main View */}
                 <div className="w-full aspect-[4/5] bg-off-black relative overflow-hidden group border border-white/5">
                     <img 
@@ -127,13 +156,13 @@ const Product = () => {
                     </div>
                 </div>
                 
-                {/* Thumbnails */}
-                <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide px-4 md:px-0">
+                {/* Thumbnails (Compact) */}
+                <div className="flex gap-4 mt-6 overflow-x-auto pb-2 scrollbar-hide px-4 md:px-0">
                     {product.images.map((img, index) => (
                         <button 
                             key={index}
                             onClick={() => setSelectedImage(img)}
-                            className={`w-20 h-24 shrink-0 bg-off-black border transition-all ${
+                            className={`h-24 w-auto aspect-[3/4] shrink-0 bg-off-black border transition-all ${
                                 (selectedImage || product.images[0]) === img 
                                 ? 'border-signal-red opacity-100' 
                                 : 'border-white/10 opacity-50 hover:opacity-80'
@@ -147,7 +176,7 @@ const Product = () => {
 
             {/* RIGHT: DATA PANEL */}
             <div className="w-full md:w-[40%] px-6 md:px-0 relative">
-                <div className="sticky top-28 space-y-4 pb-12">
+                <div className="sticky top-28 space-y-8 pb-12">
                     <div className="hidden md:block border-b border-white/20 pb-6">
                         <div className="flex justify-between items-start mb-2">
                             <h1 className="text-3xl font-black tracking-tighter leading-none max-w-md">
@@ -161,7 +190,7 @@ const Product = () => {
                     </div>
 
                     {/* DYNAMIC VARIANTS SELECTOR */}
-                    <div className="space-y-2">
+                    <div className="space-y-3">
                         <label className="text-[10px] font-bold tracking-widest text-static-gray block mb-1">VARIANT_SELECT_//</label>
                         <div className="grid grid-cols-4 gap-2">
                             {product.variants.map((variant) => (
@@ -181,7 +210,7 @@ const Product = () => {
                         </div>
                     </div>
 
-                    <div className="pt-2 space-y-2">
+                    <div className="pt-2 space-y-3">
                         <Magnet strength={0.2} range={50}>
                             <button onClick={handleAddToCart} className="w-full h-12 bg-signal-red text-black font-black tracking-widest text-sm hover:bg-white transition-colors duration-300 relative overflow-hidden group">
                                 <span className="relative z-10 group-hover:text-black">INITIATE TRANSFER</span>
@@ -190,7 +219,7 @@ const Product = () => {
                         <p className="text-[10px] text-center text-static-gray font-mono">SECURE_CONNECTION_ESTABLISHED_//</p>
                     </div>
 
-                    <div className="border-t border-white/20 pt-4 space-y-0">
+                    <div className="border-t border-white/20 pt-6 space-y-0">
                          <div className="border-b border-white/10">
                             <button onClick={() => toggleTab('details')} className="w-full py-3 flex justify-between items-center text-left hover:text-cyan-glitch transition-colors">
                                 <span className="font-bold tracking-widest text-xs">ARTIFACT_DETAILS</span>
@@ -216,6 +245,39 @@ const Product = () => {
                 </div>
             </div>
         </div>
+
+        {/* RELATED ARTIFACTS SECTION */}
+        {relatedProducts.length > 0 && (
+            <div className="border-t border-white/10 pt-12 px-6 md:px-0">
+                <h3 className="text-xl font-black mb-8 tracking-tighter">
+                    <span className="text-signal-red">//</span> SYSTEM_RECOMMENDS
+                </h3>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+                    {relatedProducts.map((p, i) => (
+                        <Link key={p.id} to={`/product/${p.handle}`} className="block group relative">
+                            <div className="aspect-[4/5] bg-off-black overflow-hidden relative border border-white/5 group-hover:border-white/20 transition-all">
+                                <div className="absolute inset-0 flex items-center justify-center text-static-gray opacity-20 text-4xl font-black rotate-45">
+                                    IMG_{String(i + 1).padStart(2, '0')}
+                                </div>
+                                {!p.available ? (
+                                    <div className="absolute top-2 left-2 border border-signal-red text-signal-red text-[9px] px-1.5 py-0.5 font-bold tracking-widest bg-black/50 backdrop-blur-md">SOLD OUT</div>
+                                ) : (
+                                    <div className="absolute top-2 left-2 border border-cyan-glitch text-cyan-glitch text-[9px] px-1.5 py-0.5 font-bold tracking-widest bg-black/50 backdrop-blur-md">NEW</div>
+                                )}
+                                <img src={p.image} alt={p.title} className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity grayscale group-hover:grayscale-0" />
+                            </div>
+                            <div className="mt-3 font-mono">
+                                <div className="flex justify-between items-start">
+                                    <h3 className="text-white text-sm font-bold group-hover:text-cyan-glitch transition-colors truncate pr-2">{p.title}</h3>
+                                    <span className="text-static-gray text-sm">${p.price.toFixed(2)}</span>
+                                </div>
+                            </div>
+                        </Link>
+                    ))}
+                </div>
+            </div>
+        )}
+
       </div>
        <div className="md:hidden fixed bottom-6 left-6 right-6 z-50">
             <Magnet strength={0.2}>
