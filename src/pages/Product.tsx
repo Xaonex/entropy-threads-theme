@@ -23,6 +23,7 @@ const Product = () => {
   const [error, setError] = useState<string | null>(null);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"details" | "sizing" | null>(null);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const { addToCart } = useCart();
 
   useEffect(() => {
@@ -112,14 +113,36 @@ const Product = () => {
 
       <div className="container mx-auto px-0 md:px-6"> 
         <div className="flex flex-col md:flex-row gap-12">
-            {/* LEFT: IMAGE STACK */}
+            {/* LEFT: IMAGE GALLERY (Mobile Carousel / Desktop Grid) */}
             <div className="w-full md:w-[60%] flex flex-col gap-4 px-0">
-                {product.images.map((img, index) => (
-                    <div key={index} className="w-full aspect-[4/5] bg-off-black relative overflow-hidden group">
-                         <img src={img} alt={`${product.name} view ${index + 1}`} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-700 grayscale group-hover:grayscale-0"/>
-                         <div className="absolute bottom-4 left-4 text-xs font-mono text-cyan-glitch">IMG_0{index + 1} // RAW_DATA</div>
+                {/* Main View */}
+                <div className="w-full aspect-[4/5] bg-off-black relative overflow-hidden group border border-white/5">
+                    <img 
+                        src={selectedImage || product.images[0]} 
+                        alt={product.name} 
+                        className="w-full h-full object-cover transition-all duration-500"
+                    />
+                    <div className="absolute bottom-4 left-4 text-xs font-mono text-cyan-glitch">
+                        IMG_VIEWER // {product.images.indexOf(selectedImage || product.images[0]) + 1}
                     </div>
-                ))}
+                </div>
+                
+                {/* Thumbnails */}
+                <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide px-4 md:px-0">
+                    {product.images.map((img, index) => (
+                        <button 
+                            key={index}
+                            onClick={() => setSelectedImage(img)}
+                            className={`w-20 h-24 shrink-0 bg-off-black border transition-all ${
+                                (selectedImage || product.images[0]) === img 
+                                ? 'border-signal-red opacity-100' 
+                                : 'border-white/10 opacity-50 hover:opacity-80'
+                            }`}
+                        >
+                            <img src={img} alt={`Thumb ${index}`} className="w-full h-full object-cover" />
+                        </button>
+                    ))}
+                </div>
             </div>
 
             {/* RIGHT: DATA PANEL */}
