@@ -144,33 +144,36 @@ const Product = () => {
         <div className="flex flex-col md:flex-row gap-12 md:gap-20 mb-24">
             {/* LEFT: IMAGE GALLERY */}
             <div className="w-full md:w-[60%] flex flex-col px-0">
-                {/* Main View */}
-                <div className="w-full aspect-[4/5] bg-off-black relative overflow-hidden group border border-white/5">
-                    <img 
-                        src={selectedImage || product.images[0]} 
-                        alt={product.name} 
-                        className="w-full h-full object-cover transition-all duration-500"
-                    />
-                    <div className="absolute bottom-4 left-4 text-xs font-mono text-cyan-glitch">
-                        IMG_VIEWER // {product.images.indexOf(selectedImage || product.images[0]) + 1}
+                {/* GALLERY WRAPPER - MAX WIDTH 500PX */}
+                <div className="w-full max-w-[500px] mx-auto md:mx-0">
+                    {/* Main View */}
+                    <div className="w-full aspect-[4/5] bg-off-black relative overflow-hidden group border border-white/5">
+                        <img 
+                            src={selectedImage || product.images[0]} 
+                            alt={product.name} 
+                            className="w-full h-full object-cover transition-all duration-500"
+                        />
+                        <div className="absolute bottom-4 left-4 text-xs font-mono text-cyan-glitch">
+                            IMG_VIEWER // {product.images.indexOf(selectedImage || product.images[0]) + 1}
+                        </div>
                     </div>
-                </div>
-                
-                {/* Thumbnails (Compact) */}
-                <div className="flex gap-4 mt-6 overflow-x-auto pb-2 scrollbar-hide px-4 md:px-0">
-                    {product.images.map((img, index) => (
-                        <button 
-                            key={index}
-                            onClick={() => setSelectedImage(img)}
-                            className={`h-24 w-auto aspect-[3/4] shrink-0 bg-off-black border transition-all ${
-                                (selectedImage || product.images[0]) === img 
-                                ? 'border-signal-red opacity-100' 
-                                : 'border-white/10 opacity-50 hover:opacity-80'
-                            }`}
-                        >
-                            <img src={img} alt={`Thumb ${index}`} className="w-full h-full object-cover" />
-                        </button>
-                    ))}
+                    
+                    {/* Thumbnails (Compact) */}
+                    <div className="flex gap-4 mt-6 overflow-x-auto pb-2 scrollbar-hide px-4 md:px-0">
+                        {product.images.map((img, index) => (
+                            <button 
+                                key={index}
+                                onClick={() => setSelectedImage(img)}
+                                className={`h-20 w-auto aspect-[3/4] shrink-0 bg-off-black border transition-all ${
+                                    (selectedImage || product.images[0]) === img 
+                                    ? 'border-signal-red opacity-100' 
+                                    : 'border-white/10 opacity-50 hover:opacity-80'
+                                }`}
+                            >
+                                <img src={img} alt={`Thumb ${index}`} className="w-full h-full object-cover" />
+                            </button>
+                        ))}
+                    </div>
                 </div>
             </div>
 
