@@ -100,8 +100,16 @@ const Product = () => {
   const formatDescription = (text: string) => {
     if (!text) return null;
     
-    // Split key sections
-    const lines = text.split('\n').filter(line => line.trim() !== '');
+    // INJECT NEWLINES TO BREAK THE BLOB
+    let cleanText = text
+        .replace(/ \/\/ /g, '\n// ')        // System messages (space before //)
+        .replace(/ \+ /g, '\n+ ')           // Bullets (space before +)
+        .replace(/The Specs:/g, '\n\nThe Specs:') // Header
+        .replace(/ \/\/ WARNING:/g, '\n// WARNING:') // Warnings
+        // Catch-all for spaced out + if needed, ensuring we don't duplicate
+        .replace(/(?<!\n)\+ /g, '\n+ ');
+
+    const lines = cleanText.split('\n').filter(line => line.trim() !== '');
     const elements = [];
     
     for (let i = 0; i < lines.length; i++) {
@@ -114,9 +122,12 @@ const Product = () => {
 
         if (line.startsWith("//")) {
             elements.push(<p key={i} className="font-mono text-signal-red text-xs mb-2 tracking-widest">{line}</p>);
-        } else if (line.startsWith("+") || line.toLowerCase().startsWith("the specs:")) {
+        } else if (line.startsWith("+")) {
             elements.push(<li key={i} className="text-static-gray text-xs ml-4 list-disc mb-1 font-mono">{line.replace(/^\+\s*/, '')}</li>);
+        } else if (line.toLowerCase().startsWith("the specs:")) {
+             elements.push(<h4 key={i} className="font-bold text-white text-xs mt-4 mb-2 uppercase">{line}</h4>);
         } else {
+             // Standard paragraph
              elements.push(<p key={i} className="mb-4 text-gray-300 text-xs leading-relaxed font-mono">{line}</p>);
         }
     }
