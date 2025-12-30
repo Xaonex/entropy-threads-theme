@@ -22,19 +22,21 @@ const Shop = () => {
   useEffect(() => {
     async function fetchProducts() {
         try {
+            // FORCE FETCH LIMIT INCREASED TO 50
             const data: any = await shopifyFetch({
                 query: PRODUCTS_QUERY,
-                variables: { first: 10 }
+                variables: { first: 50 }
             });
 
             if (data && data.products) {
+                console.log("DEBUG_GRID: Fetched Products Count:", data.products.edges.length);
                 const mapped = data.products.edges.map((e: any) => ({
                     id: e.node.id,
                     handle: e.node.handle,
                     title: e.node.title,
                     price: parseFloat(e.node.priceRange.minVariantPrice.amount),
                     image: e.node.images.edges[0]?.node.url || "",
-                    available: true
+                    available: e.node.availableForSale
                 }));
                 setProducts(mapped);
             } else {

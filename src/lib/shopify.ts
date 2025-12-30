@@ -48,6 +48,7 @@ export const PRODUCTS_QUERY = `
           title
           handle
           description
+          availableForSale
           priceRange { minVariantPrice { amount currencyCode } }
           images(first: 1) { edges { node { url altText } } }
         }
