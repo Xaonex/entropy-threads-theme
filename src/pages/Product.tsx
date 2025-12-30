@@ -145,7 +145,7 @@ const Product = () => {
             {/* LEFT: IMAGE GALLERY */}
             <div className="w-full md:w-[60%] flex flex-col px-0">
                 {/* GALLERY WRAPPER - MAX WIDTH 500PX */}
-                <div className="w-full max-w-[500px] mx-auto md:mx-0">
+                <div className="w-full max-w-[500px] mx-auto">
                     {/* Main View */}
                     <div className="w-full aspect-[4/5] bg-off-black relative overflow-hidden group border border-white/5">
                         <img 
