@@ -97,6 +97,33 @@ const Product = () => {
     setActiveTab(activeTab === tab ? null : tab);
   };
 
+  const formatDescription = (text: string) => {
+    if (!text) return null;
+    
+    // Split key sections
+    const lines = text.split('\n').filter(line => line.trim() !== '');
+    const elements = [];
+    
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        
+        // Stop condition for raw data
+        if (line.includes("Width, cm") || line.includes("Size tolerance") || line.includes("Size Guide")) {
+            break;
+        }
+
+        if (line.startsWith("//")) {
+            elements.push(<p key={i} className="font-mono text-signal-red text-xs mb-2 tracking-widest">{line}</p>);
+        } else if (line.startsWith("+") || line.toLowerCase().startsWith("the specs:")) {
+            elements.push(<li key={i} className="text-static-gray text-xs ml-4 list-disc mb-1 font-mono">{line.replace(/^\+\s*/, '')}</li>);
+        } else {
+             elements.push(<p key={i} className="mb-4 text-gray-300 text-xs leading-relaxed font-mono">{line}</p>);
+        }
+    }
+    
+    return <div className="space-y-1">{elements}</div>;
+  };
+
   const handleAddToCart = () => {
     if (!product || !selectedSize) {
         alert("SELECT_SIZE_REQUIRED_//"); 
@@ -144,7 +171,7 @@ const Product = () => {
         <div className="flex flex-col md:flex-row gap-12 md:gap-20 mb-24">
             {/* LEFT: IMAGE GALLERY */}
             <div className="w-full md:w-[60%] flex flex-col px-0">
-                {/* GALLERY WRAPPER - MAX WIDTH 500PX */}
+                {/* GALLERY WRAPPER - MAX WIDTH 500PX CENTERED */}
                 <div className="w-full max-w-[500px] mx-auto">
                     {/* Main View */}
                     <div className="w-full aspect-[4/5] bg-off-black relative overflow-hidden group border border-white/5">
@@ -230,8 +257,8 @@ const Product = () => {
                             </button>
                             {activeTab === 'details' && (
                                 <div className="pb-4 text-static-gray text-xs leading-relaxed animate-in slide-in-from-top-2 fade-in duration-300">
-                                    <p className="mb-2">{product.description}</p>
-                                    <ul className="list-disc list-inside font-mono text-[10px]">{product.features.map(f => <li key={f}>{f}</li>)}</ul>
+                                    {formatDescription(product.description)}
+                                    <ul className="list-disc list-inside font-mono text-[10px] mt-2 text-gray-500">{product.features.map(f => <li key={f}>{f}</li>)}</ul>
                                 </div>
                             )}
                          </div>
