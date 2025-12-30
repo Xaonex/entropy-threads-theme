@@ -67,25 +67,6 @@ const Shop = () => {
          </div>
       </section>
 
-      {/* FILTER BAR - Compact */}
-      <div className="border-b border-white/10 bg-off-black/50 backdrop-blur-sm sticky top-16 z-40 transition-all">
-        <div className="container mx-auto px-6 py-3 flex justify-between items-center font-mono text-xs md:text-sm">
-            <div className="flex gap-6">
-                <button className="text-white hover:text-cyan-glitch">[ ALL ]</button>
-                <button className="text-static-gray hover:text-white">[ APPAREL ]</button>
-                <button className="text-static-gray hover:text-white">[ ACCESSORIES ]</button>
-            </div>
-            <div className="flex gap-4">
-                <span>SORT_BY:</span>
-                <select className="bg-transparent border-none text-white outline-none cursor-pointer">
-                    <option>SYSTEM_DEFAULT</option>
-                    <option>PRICE_ASC</option>
-                    <option>PRICE_DESC</option>
-                </select>
-            </div>
-        </div>
-      </div>
-
       {/* PRODUCT GRID */}
       <section className="container mx-auto px-6 py-8">
         {loading ? (
