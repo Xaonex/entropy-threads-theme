@@ -24,9 +24,10 @@ export default function ScrambleText({ text, className }: ScrambleTextProps) {
   useEffect(() => {
     let iteration = 0;
     
-    // SLOW-MO SETTINGS:
-    // Interval: 70ms (~14fps) for retro feel
-    // Step: 1/5 (Requires 5 ticks to reveal 1 character)
+    // CALM GLITCH SETTINGS:
+    // Interval: 100ms (Very slow tick, calm)
+    // Step: 0.5 (Reveals 1 char every 2 ticks)
+    // Duration: 24 chars * 2 ticks * 100ms = ~4.8s
     const interval = setInterval(() => {
       setDisplayText(
         text
@@ -45,8 +46,8 @@ export default function ScrambleText({ text, className }: ScrambleTextProps) {
         setDisplayText(text); // Ensure final state is clean
       }
 
-      iteration += 1 / 5; 
-    }, 70);
+      iteration += 0.5; 
+    }, 100);
 
     return () => clearInterval(interval);
   }, [trigger, text]);

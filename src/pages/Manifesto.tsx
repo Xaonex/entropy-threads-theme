@@ -4,7 +4,7 @@ const Manifesto = () => {
   return (
     <div className="min-h-screen bg-void-black text-white flex items-center justify-center pt-24 pb-12 px-6">
       <div className="max-w-2xl text-center space-y-12">
-        <h1 className="text-4xl md:text-6xl font-black tracking-tighter">
+        <h1 className="text-3xl md:text-5xl font-black tracking-tighter whitespace-nowrap overflow-hidden text-ellipsis">
             <ScrambleText 
                 text="THE STATIC IN THE SIGNAL" 
                 className=""
