@@ -136,6 +136,16 @@
       }
     },
     "content_for_index": [],
+    "blocks": {
+      "14462631207257075589": {
+        "type": "shopify://apps/accesseaze/blocks/access_ease/bdf09e02-5b1c-43b5-b338-8f668ddea3a7",
+        "disabled": false,
+        "settings": {
+          "widget_title": "",
+          "custom_liquid": ""
+        }
+      }
+    },
     "color_schemes": {
       "scheme-1": {
         "settings": {
@@ -191,13 +201,6 @@
           "secondary_button_label": "#ffffff",
           "shadow": "#121212"
         }
-      }
-    },
-    "blocks": {
-      "pagefly-page-builder": {
-        "type": "shopify://apps/pagefly-page-builder/blocks/app-embed/83e179f7-59a0-4589-8c66-c0dddf959200",
-        "disabled": false,
-        "settings": {}
       }
     }
   },
