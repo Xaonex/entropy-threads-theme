@@ -23,16 +23,12 @@ export default function ScrambleText({ text, className }: ScrambleTextProps) {
   // The Scramble Animation Logic
   useEffect(() => {
     let iteration = 0;
-    // maxIterations roughly controls duration relative to length 
-    // but the logic below reveals char by char based on iteration vs index
-    // The user provided logic: if (index < iteration) reveal.
-    // So 'iteration' determines how many chars are revealed.
     
     const interval = setInterval(() => {
       setDisplayText(
         text
           .split('')
-          .map((char, index) => {
+          .map((_, index) => {
             if (index < iteration) {
               return text[index]; // Reveal correct char
             }
@@ -46,8 +42,8 @@ export default function ScrambleText({ text, className }: ScrambleTextProps) {
         setDisplayText(text); // Ensure final state is clean
       }
 
-      iteration += 1 / 2; // Speed control (User suggested 1/3, 1/2 is slightly faster reveal)
-    }, 40); // 30-50ms tick
+      iteration += 1 / 2; 
+    }, 40);
 
     return () => clearInterval(interval);
   }, [trigger, text]);
