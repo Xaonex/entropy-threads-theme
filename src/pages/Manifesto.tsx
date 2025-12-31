@@ -2,39 +2,31 @@ import { useState, useEffect } from 'react';
 import DecryptedText from '../components/react-bits/DecryptedText';
 
 const Manifesto = () => {
-  const [isGlitching, setIsGlitching] = useState(false);
+  const [glitchKey, setGlitchKey] = useState(0);
 
   useEffect(() => {
-    let timeoutId: any;
+    // Random delay between 4s and 8s for organic feel
+    const delay = Math.random() * 4000 + 4000;
+    
+    const timeout = setTimeout(() => {
+      setGlitchKey(prev => prev + 1); // Stable increment forces clean remount
+    }, delay);
 
-    const triggerGlitch = () => {
-      setIsGlitching(true);
-      // Reset after a short delay to allow the animation to run
-      // Effectively flips the key back, which might trigger another animation, causing a double-glitch effect (desirable for "static")
-      setTimeout(() => setIsGlitching(false), 200); 
-      
-      // Schedule next glitch (4-8 seconds)
-      const nextDelay = Math.random() * 4000 + 4000;
-      timeoutId = setTimeout(triggerGlitch, nextDelay);
-    };
-
-    // First glitch after 2s
-    timeoutId = setTimeout(triggerGlitch, 2000);
-
-    return () => clearTimeout(timeoutId);
-  }, []);
+    return () => clearTimeout(timeout);
+  }, [glitchKey]); // Re-schedules only after the key updates
 
   return (
     <div className="min-h-screen bg-void-black text-white flex items-center justify-center pt-24 pb-12 px-6">
       <div className="max-w-2xl text-center space-y-12">
         <h1 className="text-4xl md:text-6xl font-black tracking-tighter">
             <DecryptedText 
-                key={isGlitching ? 'glitch-active' : 'glitch-idle'} 
+                key={glitchKey} 
                 text="THE STATIC IN THE SIGNAL" 
                 animateOn="view" 
                 revealDirection="center" 
                 speed={50}
                 maxIterations={10} 
+                sequential={true}
                 characters="X010101"
             />
         </h1>
