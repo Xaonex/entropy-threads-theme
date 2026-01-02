@@ -1,6 +1,7 @@
 import { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Navbar } from './components/layout/Navbar';
+import ScrollToTop from './components/ScrollToTop';
 import { Footer } from './components/layout/Footer';
 import { CartProvider } from './context/CartContext';
 import { CartDrawer } from './components/cart/CartDrawer';
@@ -20,6 +21,7 @@ function App() {
   return (
     <Router>
       <CartProvider>
+        <ScrollToTop />
         <div className="relative w-full min-h-screen bg-void-black text-white font-sans selection:bg-signal-red selection:text-white">
           
           {/* GLOBAL FILM GRAIN OVERLAY */}
@@ -51,5 +53,6 @@ function App() {
 }
 
 export default App;
+
 
 

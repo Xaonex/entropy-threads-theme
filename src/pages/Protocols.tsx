@@ -30,7 +30,7 @@ const Protocols = () => {
                         STATUS: <span className="text-white">ON_DEMAND.</span> To minimize entropy (waste), every artifact is fabricated only upon signal reception.
                     </p>
                     <p>
-                        FABRICATION_TIME: <span className="text-white">3-7 CYCLES (Days)</span>.
+                        FABRICATION_TIME: <span className="text-white">3-7 CYCLES (DAYS) (DAYS)</span>.
                     </p>
                     <p>
                         GLOBAL_TRANSMISSION: <span className="text-signal-red animate-pulse">ACTIVE</span>. Tracking ID assigned upon dispatch.
@@ -45,9 +45,13 @@ const Protocols = () => {
                 </h3>
                 <div className="pl-5 border-l border-white/10 ml-[1px] py-2 space-y-4 text-gray-400 text-sm md:text-base leading-relaxed">
                     <p>
-                        WINDOW: <span className="text-white">30 CYCLES</span> from reception.
+                        WINDOW: <span className="text-white">30 CYCLES (DAYS)</span> from reception.
                     </p>
                     <p>
+                        FIRST_RETURN: COMPLIMENTARY (Free of Charge).
+                        <br/>
+                        SUBSEQUENT_RETURNS: NOMINAL_FEE APPLIED.
+                        <br/>
                         DEFECTIVE_ARTIFACTS: Immediate replacement authorized.
                     </p>
                     <p>
@@ -109,3 +113,4 @@ const Protocols = () => {
 };
 
 export default Protocols;
+

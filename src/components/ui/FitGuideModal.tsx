@@ -93,7 +93,7 @@ const FitGuideModal = ({ isOpen, onClose }: FitGuideModalProps) => {
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse font-mono text-xs md:text-sm">
+            <table className="w-full text-left border-collapse font-mono text-sm md:text-base">
                 <thead>
                     <tr className="border-b border-white/20 text-static-gray">
                         <th className="py-2 pl-2">SIZE</th>
@@ -149,4 +149,5 @@ const FitGuideModal = ({ isOpen, onClose }: FitGuideModalProps) => {
 };
 
 export default FitGuideModal;
+
 
