@@ -13,17 +13,18 @@ export default function SignalInterference({ text, className = "" }: SignalInter
 
     const loop = async () => {
       while (mounted) {
-        // 1. IDLE (3s) - Was 5s
+        // 1. IDLE (3s)
         setMode('IDLE');
         await new Promise(r => setTimeout(r, 3000));
         if (!mounted) break;
 
         // 2. BLUR PHASE (2s)
+        // POP & PAN EFFECT: Scale up and move right
         setMode('BLUR');
         await new Promise(r => setTimeout(r, 2000));
         if (!mounted) break;
         
-        // 3. IDLE (1.5s) - Was 5s
+        // 3. IDLE (1.5s)
         setMode('IDLE');
         await new Promise(r => setTimeout(r, 1500));
         if (!mounted) break;
@@ -50,12 +51,13 @@ export default function SignalInterference({ text, className = "" }: SignalInter
   const getClasses = () => {
     switch (mode) {
       case 'BLUR':
-        return "blur-[4px] tracking-[0.2em] opacity-60 scale-105 transition-all duration-[2000ms] ease-in-out";
+        // POP & PAN: scale-110, translate-x-4, slight blur, opacity-80
+        return "blur-[2px] tracking-wide opacity-80 scale-110 translate-x-6 transition-all duration-[2000ms] ease-in-out";
       case 'REDACTED':
         return "bg-white text-transparent select-none transition-none";
       case 'IDLE':
       default:
-        return "blur-0 tracking-normal opacity-100 scale-100 transition-all duration-500 ease-out";
+        return "blur-0 tracking-normal opacity-100 scale-100 translate-x-0 transition-all duration-500 ease-out";
     }
   };
 
