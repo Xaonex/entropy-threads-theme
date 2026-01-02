@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import DecryptedText from '../components/react-bits/DecryptedText';
 import { Magnet } from '../components/react-bits/Magnet';
+import FitGuideModal from '../components/ui/FitGuideModal';
 import CountUp from '../components/react-bits/CountUp';
 import { useCart } from '../context/CartContext';
 import { shopifyFetch, PRODUCT_BY_HANDLE_QUERY, PRODUCTS_QUERY } from '../lib/shopify';
@@ -26,6 +27,7 @@ const Product = () => {
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"details" | "sizing" | null>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [isFitGuideOpen, setIsFitGuideOpen] = useState(false);
   const { addToCart } = useCart();
 
   useEffect(() => {
@@ -225,14 +227,20 @@ const Product = () => {
                             </h1>
                         </div>
                         <div className="flex justify-between items-center font-mono">
-                            <span className="text-xl text-white">${product.price.toFixed(2)}</span>
+                            <div className="flex items-center gap-3">
+                                <span className="text-xl text-white">${product.price.toFixed(2)}</span>
+                                <span className="text-[9px] bg-white/10 px-2 py-1 rounded text-gray-300 font-mono tracking-wide">[ FIT: BOXY_OVERSIZED ]</span>
+                            </div>
                             <span className="text-[10px] text-signal-red animate-pulse">SYSTEM WATCH: <CountUp to={Math.floor(Math.random() * 50) + 12} duration={2} /> USERS ACTIVE</span>
                         </div>
                     </div>
 
                     {/* DYNAMIC VARIANTS SELECTOR */}
                     <div className="space-y-3">
-                        <label className="text-[10px] font-bold tracking-widest text-static-gray block mb-1">VARIANT_SELECT_//</label>
+                        <div className="flex justify-between items-center mb-1">
+                            <label className="text-[10px] font-bold tracking-widest text-static-gray">VARIANT_SELECT_//</label>
+                            <button onClick={() => setIsFitGuideOpen(true)} className="text-[10px] text-cyan-glitch hover:underline font-mono">[ VIEW_BLUEPRINTS ]</button>
+                        </div>
                         <div className="grid grid-cols-4 gap-2">
                             {product.variants.map((variant) => (
                                 <button 
@@ -257,7 +265,7 @@ const Product = () => {
                                 <span className="relative z-10 group-hover:text-black">INITIATE TRANSFER</span>
                             </button>
                         </Magnet>
-                        <p className="text-[10px] text-center text-static-gray font-mono">SECURE_CONNECTION_ESTABLISHED_//</p>
+                        <p className="text-[10px] text-center text-signal-red font-mono mt-2 tracking-widest border border-white/10 py-1 bg-white/5">[ MADE_ON_DEMAND // MINIMIZING_ENTROPY ]</p>
                     </div>
 
                     <div className="border-t border-white/20 pt-6 space-y-0">
@@ -325,8 +333,10 @@ const Product = () => {
                 <button onClick={handleAddToCart} className="w-full h-12 bg-signal-red text-black font-black tracking-widest text-xs shadow-lg shadow-signal-red/20 border border-black">ADD TO CART - ${product.price}</button>
             </Magnet>
        </div>
+       <FitGuideModal isOpen={isFitGuideOpen} onClose={() => setIsFitGuideOpen(false)} />
     </div>
   );
 };
 
 export default Product;
+

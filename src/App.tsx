@@ -13,6 +13,7 @@ const Home = lazy(() => import('./pages/Home'));
 const Shop = lazy(() => import('./pages/Shop'));
 const Product = lazy(() => import('./pages/Product'));
 const Manifesto = lazy(() => import('./pages/Manifesto'));
+const Protocols = lazy(() => import('./pages/Protocols'));
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
                   <Route path="/shop" element={<Shop />} />
                   <Route path="/product/:id" element={<Product />} />
                   <Route path="/manifesto" element={<Manifesto />} />
+                  <Route path="/protocols" element={<Protocols />} />
               </Routes>
             </Suspense>
           </main>
@@ -48,3 +50,4 @@ function App() {
 }
 
 export default App;
+

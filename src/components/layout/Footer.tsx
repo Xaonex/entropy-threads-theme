@@ -26,23 +26,22 @@ export const Footer = () => {
         <div className="flex flex-col space-y-4">
           <h4 className="text-sm font-bold text-gray-500 uppercase tracking-widest">Legal</h4>
           <ul className="space-y-2 text-sm text-gray-400">
-            <li><a href="#" className="hover:text-white transition-colors">Terms</a></li>
-            <li><a href="#" className="hover:text-white transition-colors">Privacy</a></li>
-            <li><a href="#" className="hover:text-white transition-colors">Returns</a></li>
+            <li><a href="/protocols" className="hover:text-white transition-colors">Protocols</a></li>
+            <li><a href="/protocols" className="hover:text-white transition-colors">Privacy</a></li>
+            <li><a href="/protocols" className="hover:text-white transition-colors">Returns</a></li>
           </ul>
         </div>
 
         {/* Col 4: Newsletter */}
         <div className="flex flex-col space-y-4">
-          <h4 className="text-sm font-bold text-gray-500 uppercase tracking-widest">Mailing List</h4>
-          <div className="flex relative">
-            <span className="absolute left-3 top-2.5 text-gray-500 font-mono">{'>'}</span>
-            <input 
-              type="email" 
-              placeholder="ENTER_EMAIL" 
-              className="w-full bg-black border border-white/20 px-8 py-2 text-sm text-white focus:outline-none focus:border-signal-red font-mono placeholder:text-gray-700"
-            />
+          <h4 className="text-sm font-bold text-gray-500 uppercase tracking-widest">Compliance</h4>
+          <div className="flex items-center justify-between border border-white/20 p-2 opacity-70 hover:opacity-100 transition-opacity">
+            <span className="text-[10px] text-static-gray font-mono">COOKIE_PREF_//</span>
+            <div className="w-8 h-4 bg-signal-red/20 rounded-full relative cursor-not-allowed">
+                <div className="w-2 h-2 bg-signal-red rounded-full absolute top-1 right-1"></div>
+            </div>
           </div>
+          <a href="/protocols" className="text-[10px] text-cyan-glitch font-mono hover:underline decoration-cyan-glitch/50 underline-offset-4 mt-2 block">VIEW_ALL_PROTOCOLS_&gt;</a>
         </div>
       </div>
       
@@ -52,3 +51,4 @@ export const Footer = () => {
     </footer>
   );
 };
+
