@@ -4,7 +4,7 @@ const Archive = () => {
   const placeholders = Array.from({ length: 6 }).map((_, i) => ({
       id: i + 1,
       sector: ['TOKYO', 'BERLIN', 'SEOUL', 'KYOTO', 'OSAKA', 'SHANGHAI'][i],
-      subject: \VOID-\\
+      subject: `VOID-${String(i + 1).padStart(2, '0')}`
   }));
 
   return (
@@ -72,14 +72,14 @@ const Archive = () => {
 
       </div>
       
-      <style>{\
+      <style>{`
         @keyframes scan {
             0% { top: 0%; opacity: 0; }
             10% { opacity: 1; }
             90% { opacity: 1; }
             100% { top: 100%; opacity: 0; }
         }
-      \}</style>
+      `}</style>
     </div>
   );
 };

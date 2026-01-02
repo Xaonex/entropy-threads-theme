@@ -30,8 +30,8 @@ const CycleCounter = () => {
 
                 {/* Progress Bar */}
                 <div 
-                    className={h-full transition-all duration-1000 ease-out }
-                    style={{ width: ${percentage}% }}
+                    className={`h-full transition-all duration-1000 ease-out ${isCritical ? 'bg-signal-red shadow-[0_0_10px_rgba(255,51,51,0.5)]' : 'bg-cyan-glitch shadow-[0_0_10px_rgba(0,255,255,0.5)]'}`}
+                    style={{ width: `${percentage}%` }}
                 >
                     {/* Glitch Overlay on Bar */}
                     <div className="absolute inset-0 bg-white/20 mix-blend-overlay w-full h-full animate-pulse"></div>
