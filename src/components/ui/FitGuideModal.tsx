@@ -33,7 +33,7 @@ const FitGuideModal = ({ isOpen, onClose }: FitGuideModalProps) => {
     >
       <div 
         ref={modalRef}
-        className="bg-off-black border border-white/20 w-full max-w-4xl shadow-2xl relative overflow-hidden flex flex-col md:flex-row"
+        className="bg-off-black border border-white/20 w-full max-w-4xl shadow-2xl relative overflow-hidden flex flex-col md:flex-row max-h-[90vh] overflow-y-auto md:overflow-y-visible"
       >
         {/* CLOSE BUTTON */}
         <button 
@@ -149,3 +149,4 @@ const FitGuideModal = ({ isOpen, onClose }: FitGuideModalProps) => {
 };
 
 export default FitGuideModal;
+

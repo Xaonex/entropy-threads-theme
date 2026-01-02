@@ -12,6 +12,7 @@ export const Navbar = () => {
 
   const navLinks = [
     { name: "SHOP", path: "/shop", children: [{ name: "DROP_00", path: "/shop" }] },
+    { name: "ARCHIVE", path: "/archive" },
     { name: "MANIFESTO", path: "/manifesto" },
   ];
 
@@ -103,7 +104,10 @@ export const Navbar = () => {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.4 }}
                 >
-                    <Link to="/account" onClick={toggleMobileMenu} className="text-2xl font-mono text-gray-500 hover:text-white mt-8 block">
+                    <Link to="/protocols" onClick={toggleMobileMenu} className="text-xl font-mono text-static-gray hover:text-white mt-8 block">
+                        PROTOCOLS
+                    </Link>
+                    <Link to="/account" onClick={toggleMobileMenu} className="text-xl font-mono text-gray-500 hover:text-white mt-4 block">
                         ACCOUNT
                     </Link>
                 </motion.div>
@@ -114,3 +118,4 @@ export const Navbar = () => {
     </nav>
   );
 };
+
