@@ -4,6 +4,7 @@ import DecryptedText from '../components/react-bits/DecryptedText';
 import { Magnet } from '../components/react-bits/Magnet';
 import FitGuideModal from '../components/ui/FitGuideModal';
 import CountUp from '../components/react-bits/CountUp';
+import CycleCounter from '../components/ui/CycleCounter';
 import { useCart } from '../context/CartContext';
 import { shopifyFetch, PRODUCT_BY_HANDLE_QUERY, PRODUCTS_QUERY } from '../lib/shopify';
 
@@ -259,7 +260,7 @@ const Product = () => {
                         </div>
                     </div>
 
-                    <div className="pt-2 space-y-3">
+                    <CycleCounter />`r`n                    <div className="pt-2 space-y-3">
                         <Magnet strength={0.2} range={50}>
                             <button onClick={handleAddToCart} className="w-full h-12 bg-signal-red text-black font-black tracking-widest text-sm hover:bg-white transition-colors duration-300 relative overflow-hidden group">
                                 <span className="relative z-10 group-hover:text-black">INITIATE TRANSFER</span>
@@ -339,4 +340,5 @@ const Product = () => {
 };
 
 export default Product;
+
 
