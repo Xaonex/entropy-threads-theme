@@ -30,7 +30,7 @@ const Protocols = () => {
                         STATUS: <span className="text-white">ON_DEMAND.</span> To minimize entropy (waste), every artifact is fabricated only upon signal reception.
                     </p>
                     <p>
-                        FABRICATION_TIME: <span className="text-white">3-7 CYCLES (DAYS) (DAYS)</span>.
+                        FABRICATION_TIME: <span className="text-white">3-7 CYCLES (DAYS)</span>.
                     </p>
                     <p>
                         GLOBAL_TRANSMISSION: <span className="text-signal-red animate-pulse">ACTIVE</span>. Tracking ID assigned upon dispatch.
@@ -93,7 +93,7 @@ const Protocols = () => {
                         <span className="text-signal-red">WARNING:</span> Fabrication begins automatically.
                     </p>
                     <p>
-                        CANCELLATION_WINDOW: <span className="text-white">T-MINUS 60 MINUTES</span> from order confirmation.
+                        CANCELLATION_WINDOW: <span className="text-white">T-MINUS 24 HOURS</span> from order confirmation.
                     </p>
                     <p>
                         Once the fabrication lock is engaged, the process cannot be aborted.
@@ -113,4 +113,5 @@ const Protocols = () => {
 };
 
 export default Protocols;
+
 

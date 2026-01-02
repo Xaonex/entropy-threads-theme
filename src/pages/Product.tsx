@@ -26,7 +26,7 @@ const Product = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<"details" | "sizing" | null>(null);
+  const [activeTab, setActiveTab] = useState<"details" | "sizing" | "care" | null>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [isFitGuideOpen, setIsFitGuideOpen] = useState(false);
   const { addToCart } = useCart();
@@ -96,7 +96,7 @@ const Product = () => {
     loadData();
   }, [id]);
 
-  const toggleTab = (tab: "details" | "sizing") => {
+  const toggleTab = (tab: "details" | "sizing" | "care") => {
     setActiveTab(activeTab === tab ? null : tab);
   };
 
@@ -291,6 +291,22 @@ const Product = () => {
                                 <div className="pb-4 text-static-gray text-xs font-mono animate-in slide-in-from-top-2 fade-in duration-300">FIT: OVERSIZED.<br/>MODEL IS 185CM WEARING SIZE L.<br/>REFERENCE: SYSTEM_STANDARD_02.</div>
                             )}
                          </div>
+                         <div className="border-b border-white/10">
+                            <button onClick={() => toggleTab('care')} className="w-full py-3 flex justify-between items-center text-left hover:text-cyan-glitch transition-colors">
+                                <span className="font-bold tracking-widest text-xs">CARE_PROTOCOLS</span>
+                                <span className="font-mono text-sm">{activeTab === 'care' ? '-' : '+'}</span>
+                            </button>
+                            {activeTab === 'care' && (
+                                <div className="pb-4 text-static-gray text-xs font-mono animate-in slide-in-from-top-2 fade-in duration-300">
+                                    <ul className="list-disc list-inside space-y-1">
+                                        <li>Machine wash cold, inside-out, gentle cycle.</li>
+                                        <li>No fabric softeners. Hang-dry preferred.</li>
+                                        <li>Cool iron inside-out. Do not iron decoration.</li>
+                                        <li>Do not dry clean.</li>
+                                    </ul>
+                                </div>
+                            )}
+                         </div>
                     </div>
                 </div>
             </div>
@@ -340,5 +356,6 @@ const Product = () => {
 };
 
 export default Product;
+
 
 
