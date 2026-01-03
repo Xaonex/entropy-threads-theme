@@ -52,7 +52,7 @@ export default function SignalInterference({ text, className = "" }: SignalInter
     switch (mode) {
       case 'BLUR':
         // POP & PAN: scale-110, translate-x-4, slight blur, opacity-80
-        return "blur-[2px] tracking-wide opacity-80 scale-110 translate-x-6 transition-all duration-[2000ms] ease-in-out";
+        return "blur-[4px] tracking-widest opacity-80 scale-[0.85] transition-all duration-[800ms] ease-in-out";
       case 'REDACTED':
         return "bg-white text-transparent select-none transition-none";
       case 'IDLE':
